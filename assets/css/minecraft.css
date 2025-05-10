@@ -1,0 +1,12 @@
+.server-icon {
+  width: 64px;
+  height: 64px;
+  image-rendering: pixelated;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+.card {
+  position: relative;
+}

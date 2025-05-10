@@ -1,0 +1,8 @@
+.bg-option {
+  margin: 0.5rem;
+  background: var(--bg1-color);
+  color: white;
+  border: 1px solid var(--accent);
+  padding: 0.5rem;
+  cursor: pointer;
+}

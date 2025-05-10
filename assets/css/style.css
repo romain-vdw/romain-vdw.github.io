@@ -1,0 +1,81 @@
+:root {
+  --bg-color: #121212;
+  --bg1-color: #1e1e1e;
+  --text-color: #f0f0f0;
+  --inverse-text-color: #000000;
+  --accent: #e53935;
+  --transition: 0.5s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+  background: black;
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: background-color var(--transition), color var(--transition);
+  min-height: 100vh;
+}
+
+nav {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--bg1-color);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+  width: 100%;
+  justify-content: center;
+}
+
+nav a {
+  text-decoration: none;
+  color: var(--text-color);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: background var(--transition);
+}
+
+nav a:hover, nav a.active {
+  background: var(--accent);
+  color: var(--inverse-text-color);
+}
+
+.settings-fab {
+  text-decoration: none;
+  position: fixed;
+  top: 0.8rem;
+  right: 0.8rem;
+  color: var(--accent);
+  border-radius: 50%;
+  padding: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+main {
+  max-width: 1000px;
+  width: 100%;
+  padding: 2rem;
+  animation: fadeIn var(--transition);
+}
+
+.card {
+  background: var(--bg1-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
