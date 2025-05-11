@@ -23,8 +23,7 @@ function updateStatus() {
           ${icon}
           <p>Status: <strong style="color: lime;">Online</strong></p>
           <p>Players: ${data.players.online}/${data.players.max}</p>
-          ${data.hostname ? `<p>Hostname: ${data.hostname}</p>` : ""}
-          <p>IP: ${data.ip}</p>
+          ${data.hostname ? `<p>Server Address: ${data.hostname}</p>` : ""}
           <p>Version: ${data.version}</p>
           ${
             data.motd
