@@ -4,9 +4,15 @@
   image-rendering: pixelated;
   position: absolute;
   top: 1rem;
-  right: 1rem;
+  right: 1.3rem;
 }
 
 .card {
   position: relative;
+  padding: 1rem;
+  line-height: 1.5;
+}
+
+.card .motd {
+  margin: 0.25rem 0;   /* small margin between lines */
 }
