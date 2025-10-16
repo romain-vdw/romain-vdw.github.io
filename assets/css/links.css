@@ -1,0 +1,115 @@
+.link-group {
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.link-group-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s ease;
+}
+
+.link-group-header:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.link-group-header h2 {
+  flex-grow: 1;
+  font-size: 1.2rem;
+  color: #ff4444;
+  margin: 0;
+}
+
+.link-group-header .material-icons-round {
+  color: #ff4444;
+  font-size: 1.4rem;
+}
+
+.expand-icon {
+  transition: transform 0.25s ease;
+}
+
+.expand-icon.rotated {
+  transform: rotate(180deg);
+}
+
+.links-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  padding: 1rem;
+  transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+}
+
+.links-grid.collapsed {
+  max-height: 0;
+  opacity: 0;
+  padding: 0 1rem;
+  overflow: hidden;
+}
+
+.link-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 8px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-all;
+  hyphens: auto;
+}
+
+.link-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(255, 0, 0, 0.2);
+}
+
+.links-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.toggle-collapse-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.9rem;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.toggle-collapse-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.toggle-collapse-btn .material-icons-round {
+  font-size: 1.2rem;
+}
+
+
+@media (max-width: 600px) {
+  .links-grid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+}

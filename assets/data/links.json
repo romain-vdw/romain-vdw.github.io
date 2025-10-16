@@ -1,0 +1,104 @@
+{
+  "Special Sites": {
+    "icon": "folder_special",
+    "links": [
+      {
+        "name": "ChatGPT",
+        "url": "https://chatgpt.com/"
+      },
+      {
+        "name": "Remote Desktop",
+        "url": "https://remotedesktop.google.com/access"
+      },
+      {
+        "name": "File Sharing Site",
+        "url": "https://toffeeshare.com"
+      }
+    ]
+  },
+  "Subdomain Dashboards": {
+    "icon": "dashboard",
+    "links": [
+      {
+        "name": "Home Server Interface",
+        "url": "https://webmin.rom1.be"
+      },
+      {
+        "name": "Game Hosting Interface",
+        "url": "https://amp.rom1.be"
+      }
+    ]
+  },
+  "Managment Sites": {
+    "icon": "dns",
+    "links": [
+      {
+        "name": "Combell Dashboard",
+        "url": "https://my.combell.com/en/go"
+      },
+      {
+        "name": "Google Drive",
+        "url": "https://drive.google.com/drive/my-drive"
+      },
+      {
+        "name": "My Github",
+        "url": "https://github.com/romain-vdw"
+      }
+    ]
+  },
+  "Game Sites": {
+    "icon": "sports_esports",
+    "links": [
+      {
+        "name": "Monopoly Game",
+        "url": "https://richup.io"
+      },
+      {
+        "name": "BombParty/PopSauce Game",
+        "url": "https://jklm.fun"
+      },
+      {
+        "name": "Gamified Geoguessr Game",
+        "url": "https://lostgamer.io"
+      },
+      {
+        "name": "Human Benchmark",
+        "url": "https://humanbenchmark.com"
+      }
+    ]
+  },
+  "Website Building": {
+    "icon": "construction",
+    "links": [
+      {
+        "name": "HTML Cheat Sheet",
+        "url": "https://rogiervdl.github.io/HTML-course/08_samenvatting.html"
+      },
+      {
+        "name": "CSS Cheat Sheet",
+        "url": "https://rogiervdl.github.io/CSS-course/07_samenvatting.html"
+      },
+      {
+        "name": "Javascript Cheat Sheet",
+        "url": "https://rogiervdl.github.io/JS-course/summary.html"
+      },
+      {
+        "name": "Website Icons Used",
+        "url": "https://fonts.google.com/icons?icon.set=Material+Icons&icon.style=Rounded"
+      }
+    ]
+  },
+  "Template": {
+    "icon": "",
+    "links": [
+      {
+        "name": "Tessssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssst",
+        "url": ""
+      },
+      {
+        "name": "Example",
+        "url": ""
+      }
+    ]
+  }
+}
