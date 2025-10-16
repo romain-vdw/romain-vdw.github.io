@@ -72,7 +72,10 @@ fetch("/assets/data/mc-servers.json")
     // Create cards for each server
     for (const server of servers) {
       createServerCard(server);
-      updateServerStatus(server, document.getElementById(`server-${server.ip.replace(/\W/g, "_")}`));
+      updateServerStatus(
+        server,
+        document.getElementById(`server-${server.ip.replace(/\W/g, "_")}`)
+      );
     }
     // Auto-refresh every 30s
     setInterval(() => updateAllServers(servers), 30000);

@@ -1,10 +1,10 @@
 // Highlight active navigation link based on current page
 const navLinks = document.querySelectorAll("nav a");
-const currentPath = window.location.pathname.replace(/^\/|\/$/g, '') || "index";
+const currentPath = window.location.pathname.replace(/^\/|\/$/g, "") || "index";
 
 for (const link of navLinks) {
-  const href = link.getAttribute("href").replace(/^\/|\/$/g, '') || "index";
-  if (href  === currentPath) {
+  const href = link.getAttribute("href").replace(/^\/|\/$/g, "") || "index";
+  if (href === currentPath) {
     link.classList.add("active");
   } else {
     link.classList.remove("active");
@@ -17,7 +17,7 @@ const bgOptions = document.querySelectorAll(".bg-option");
 
 function applyBackground(url, size, repeat = false) {
   body.style.backgroundImage = url ? `url('${url}')` : "none";
-  
+
   if (repeat) {
     body.style.backgroundSize = size;
     body.style.backgroundRepeat = "repeat";
@@ -25,7 +25,10 @@ function applyBackground(url, size, repeat = false) {
     body.style.backgroundSize = "cover";
     body.style.backgroundRepeat = "no-repeat";
   }
-  localStorage.setItem("customBackground", JSON.stringify({ url, size, repeat }));
+  localStorage.setItem(
+    "customBackground",
+    JSON.stringify({ url, size, repeat })
+  );
 }
 
 function loadBackground() {
