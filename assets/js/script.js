@@ -1,14 +1,40 @@
-// Highlight active navigation link based on current page
-const navLinks = document.querySelectorAll("nav a");
+// ===============================
+// Highlight Active Navigation Link
+// ===============================
+const navLinksA = document.querySelectorAll(".nav-links a");
 const currentPath = window.location.pathname.replace(/^\/|\/$/g, "") || "index";
 
-for (const link of navLinks) {
+for (const link of navLinksA) {
   const href = link.getAttribute("href").replace(/^\/|\/$/g, "") || "index";
-  if (href === currentPath) {
-    link.classList.add("active");
-  } else {
-    link.classList.remove("active");
-  }
+  if (href === currentPath) link.classList.add("active");
+}
+
+// ===============================
+// Mobile Menu + Overlay Handling
+// ===============================
+const menuToggle = document.querySelector(".menu-toggle");
+const navLinks = document.querySelector(".nav-links");
+const overlay = document.querySelector(".nav-overlay");
+
+if (menuToggle && navLinks && overlay) {
+  menuToggle.addEventListener("click", () => {
+    const isOpen = navLinks.classList.toggle("open");
+    overlay.classList.toggle("active", isOpen);
+
+    // Change the icon (menu ↔ close)
+    const icon = menuToggle.querySelector(".material-icons-round");
+    if (icon) icon.textContent = isOpen ? "close" : "menu";
+  });
+
+  // Close menu if user clicks outside (on overlay)
+  overlay.addEventListener("click", () => {
+    navLinks.classList.remove("open");
+    overlay.classList.remove("active");
+
+    // Reset icon to menu
+    const icon = menuToggle.querySelector(".material-icons-round");
+    if (icon) icon.textContent = "menu";
+  });
 }
 
 // Background preference handling

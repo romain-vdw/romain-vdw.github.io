@@ -24,47 +24,17 @@ body {
   min-height: 100vh;
 }
 
-nav {
-  display: flex;
-  gap: 1rem;
-  padding: 1rem;
-  background: var(--bg1-color);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-  width: 100%;
-  justify-content: center;
-}
-
-nav a {
-  text-decoration: none;
-  color: var(--text-color);
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  transition: background var(--transition);
-}
-
-nav a:hover, nav a.active {
-  background: var(--accent);
-  color: var(--inverse-text-color);
-}
-
-.settings-fab {
-  text-decoration: none;
-  position: fixed;
-  top: 0.8rem;
-  right: 0.8rem;
-  color: var(--accent);
-  border-radius: 50%;
-  padding: 0.5rem;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
 main {
   max-width: 1000px;
   width: 100%;
   padding: 2rem;
   animation: fadeIn var(--transition);
+}
+
+main h1 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  text-align: center;
 }
 
 .card {
@@ -84,5 +54,153 @@ main {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* ===== HEADER / NAVBAR ===== */
+header {
+  width: 100%;
+  background: var(--bg1-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+.menu-toggle {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  display: none;
+  /* Hidden on desktop */
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 8px;
+  transition: background var(--transition);
+}
+
+.menu-toggle:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  transition: max-height var(--transition), opacity var(--transition);
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--text-color);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: background var(--transition);
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  background: var(--accent);
+  color: var(--inverse-text-color);
+}
+
+/* Settings Button */
+.settings-fab {
+  text-decoration: none;
+  color: var(--accent);
+  border-radius: 50%;
+  padding: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.settings-fab:hover {
+  transform: rotate(45deg);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Overlay that dims the background when menu is open */
+.nav-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+  z-index: 5;
+}
+
+/* When the menu is open, show the overlay */
+.nav-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 767px) {
+  .menu-toggle {
+    display: inline-flex;
+  }
+
+  .nav-links {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: var(--bg1-color);
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: max-height 0.4s ease, opacity 0.4s ease, transform 0.4s ease, padding 0.4s ease;
+    padding: 0 1rem;
+  }
+
+  .nav-links.open {
+    max-height: 300px;
+    opacity: 1;
+    transform: translateY(0);
+    padding: 0.5rem 1rem;
+  }
+
+  .nav-links a {
+    width: 100%;
+    padding: 0.8rem;
+  }
+
+  .settings-fab {
+    position: absolute;
+    top: 0.8rem;
+    right: 0.8rem;
   }
 }

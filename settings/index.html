@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Settings | My Dashboard</title>
+  <title>Settings | Rom1's Hub</title>
   <link rel="stylesheet" href="/assets/css/style.css">
   <link rel="stylesheet" href="/assets/css/settings.css">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
@@ -12,16 +12,27 @@
 </head>
 
 <body>
-  <nav>
-    <a href="/">Home</a>
-    <a href="/links/">Links</a>
-    <a href="/minecraft/">Minecraft</a>
-    <a href="/tools/">Tools</a>
-    <a href="/about/">About</a>
-  </nav>
-  <a href="/settings/" class="settings-fab" title="Settings">
-    <span class="material-icons-round">settings</span>
-  </a>
+  <header>
+    <nav class="navbar">
+      <div class="nav-left">
+        <button class="menu-toggle" aria-label="Toggle menu" type="button">
+          <span class="material-icons-round">menu</span>
+        </button>
+        <span class="nav-title">Rom1's Hub</span>
+      </div>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/links/">Links</a>
+        <a href="/minecraft/">Minecraft</a>
+        <a href="/tools/">Tools</a>
+        <a href="/about/">About</a>
+      </div>
+      <a href="/settings/" class="settings-fab" title="Settings">
+        <span class="material-icons-round">settings</span>
+      </a>
+    </nav>
+    <div class="nav-overlay"></div>
+  </header>
 
   <main>
     <h1>Settings</h1>
