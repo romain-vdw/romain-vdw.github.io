@@ -58,12 +58,16 @@
         "url": "https://jklm.fun"
       },
       {
+        "name": "Human Benchmark",
+        "url": "https://humanbenchmark.com"
+      },
+      {
         "name": "Gamified Geoguessr Game",
         "url": "https://lostgamer.io"
       },
       {
-        "name": "Human Benchmark",
-        "url": "https://humanbenchmark.com"
+        "name": "Free Geoguessr Game",
+        "url": "https://openguessr.com"
       }
     ]
   },
