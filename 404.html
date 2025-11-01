@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found | Rom1's Hub</title>
+  <style>
+    :root {
+      --bg-color: #000000;
+      --bg1-color: #1e1e1e;
+      --text-color: #f0f0f0;
+      --inverse-text-color: #000000;
+      --accent: #e53935;
+      --transition: 0.5s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      min-height: 100vh;
+      transition: background-color var(--transition), color var(--transition);
+      animation: fadeIn var(--transition);
+    }
+
+    h1 {
+      font-size: 5rem;
+      margin-bottom: 1rem;
+      color: var(--accent);
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      color: var(--text-color);
+    }
+
+    a.button {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: var(--accent);
+      color: var(--inverse-text-color);
+      text-decoration: none;
+      border-radius: 8px;
+      transition: background var(--transition), color var(--transition), transform 0.2s ease;
+    }
+
+    a.button:hover {
+      transform: translateY(-2px);
+      background: #ff5a50;
+    }
+
+    .suggestion {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .suggestion a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+
+    .suggestion a:hover {
+      color: #ff5a50;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <h1>404</h1>
+    <p>Oops! The page you’re looking for doesn’t exist.</p>
+    <a href="/" class="button">Return Home</a>
+    <div class="suggestion" id="suggestion"></div>
+  </main>
+
+  <script>
+    const pages = [
+      { name: "Home", url: "/" },
+      { name: "Links", url: "/links.html" },
+      { name: "Minecraft", url: "/minecraft.html" },
+      { name: "Tools", url: "/tools.html" },
+      { name: "About", url: "/about.html" },
+      { name: "Settings", url: "/settings.html" }
+    ];
+
+    const path = window.location.pathname.toLowerCase();
+    let bestMatch = null;
+    let bestScore = 0;
+
+    function similarity(a, b) {
+      let matches = 0;
+      const len = Math.min(a.length, b.length);
+      for (let i = 0; i < len; i++) {
+        if (a[i] === b[i]) matches++;
+      }
+      return matches / Math.max(a.length, b.length);
+    }
+
+    pages.forEach(p => {
+      const score = similarity(path, p.url.toLowerCase());
+      if (score > bestScore) {
+        bestScore = score;
+        bestMatch = p;
+      }
+    });
+
+    if (bestMatch && bestScore > 0.2) {
+      const suggestion = document.getElementById("suggestion");
+      suggestion.innerHTML = `Did you mean <a href="${bestMatch.url}">${bestMatch.name}</a>?`;
+    }
+  </script>
+</body>
+
+</html>
