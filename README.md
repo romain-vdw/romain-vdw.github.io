@@ -20,7 +20,7 @@ Settings Page
 ------
 
 - Make backgrounds better (not properly centered on mobile & bad quality)
-- Add more backgrounds (maybe even a color picker)
+- Add more backgrounds (maybe even a color picker or a black animated background with stars/space)
 - Add themes or color schemes (dark, red, blue, etc.) saved in localStorage
 - Could improve the favicon and OpenGraph preview (so links shared on Discord look great)
 
