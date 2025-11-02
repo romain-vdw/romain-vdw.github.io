@@ -16,28 +16,65 @@ const menuToggle = document.querySelector(".menu-toggle");
 const navLinks = document.querySelector(".nav-links");
 const overlay = document.querySelector(".nav-overlay");
 
+// helper to close menu
+function closeMenu() {
+  if (!navLinks) return;
+  navLinks.classList.remove("open");
+  if (overlay) overlay.classList.remove("active");
+  const icon = menuToggle?.querySelector(".material-icons-round");
+  if (icon) icon.textContent = "menu";
+}
+
+// helper to open menu
+function openMenu() {
+  if (!navLinks) return;
+  navLinks.classList.add("open");
+  if (overlay) overlay.classList.add("active");
+  const icon = menuToggle?.querySelector(".material-icons-round");
+  if (icon) icon.textContent = "close";
+}
+
 if (menuToggle && navLinks && overlay) {
-  menuToggle.addEventListener("click", () => {
+  menuToggle.addEventListener("click", (e) => {
+    e.stopPropagation();
     const isOpen = navLinks.classList.toggle("open");
     overlay.classList.toggle("active", isOpen);
-
-    // Change the icon (menu ↔ close)
     const icon = menuToggle.querySelector(".material-icons-round");
     if (icon) icon.textContent = isOpen ? "close" : "menu";
   });
 
-  // Close menu if user clicks outside (on overlay)
-  overlay.addEventListener("click", () => {
-    navLinks.classList.remove("open");
-    overlay.classList.remove("active");
+  // Close menu if user clicks overlay
+  overlay.addEventListener("click", () => closeMenu());
 
-    // Reset icon to menu
-    const icon = menuToggle.querySelector(".material-icons-round");
-    if (icon) icon.textContent = "menu";
+  // Close menu when a nav link is clicked (use event delegation)
+  navLinks.addEventListener("click", (e) => {
+    const a = e.target.closest && e.target.closest("a");
+    if (a) {
+      // for internal navigation close, for external let default happen
+      closeMenu();
+    }
+  });
+
+  // Close menu when clicking anywhere outside the menu (document-level)
+  document.addEventListener("click", (e) => {
+    if (
+      !navLinks.contains(e.target) &&
+      !menuToggle.contains(e.target) &&
+      navLinks.classList.contains("open")
+    ) {
+      closeMenu();
+    }
+  });
+
+  // Close with Escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && navLinks.classList.contains("open")) closeMenu();
   });
 }
 
+// ===============================
 // Background preference handling
+// ===============================
 const body = document.body;
 const bgOptions = document.querySelectorAll(".bg-option");
 

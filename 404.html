@@ -8,7 +8,7 @@
   <style>
     :root {
       --bg-color: #000000;
-      --bg1-color: #1e1e1e;
+      --bg1-color: rgba(255, 255, 255, 0.06);
       --text-color: #f0f0f0;
       --inverse-text-color: #000000;
       --accent: #e53935;
@@ -26,13 +26,22 @@
       background: var(--bg-color);
       color: var(--text-color);
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
       text-align: center;
       min-height: 100vh;
       transition: background-color var(--transition), color var(--transition);
       animation: fadeIn var(--transition);
+    }
+
+    main {
+      background: var(--bg1-color);
+      padding: 2rem 3rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(12px);
+      transition: background var(--transition), box-shadow var(--transition);
+      max-width: 520px;
     }
 
     h1 {
@@ -43,29 +52,32 @@
 
     p {
       font-size: 1.2rem;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.8rem;
       color: var(--text-color);
     }
 
     a.button {
       display: inline-block;
-      padding: 0.75rem 1.5rem;
+      padding: 0.75rem 1.6rem;
       background: var(--accent);
       color: var(--inverse-text-color);
       text-decoration: none;
-      border-radius: 8px;
-      transition: background var(--transition), color var(--transition), transform 0.2s ease;
+      border-radius: 10px;
+      font-weight: 500;
+      transition: background var(--transition), transform 0.2s ease, box-shadow 0.3s ease;
     }
 
     a.button:hover {
       transform: translateY(-2px);
-      background: #ff5a50;
+      box-shadow:
+        0 0 10px color-mix(in srgb, var(--accent) 40%, transparent),
+        0 4px 12px color-mix(in srgb, var(--accent) 25%, transparent);
     }
 
     .suggestion {
-      margin-top: 1rem;
-      font-size: 0.9rem;
-      opacity: 0.8;
+      margin-top: 1.2rem;
+      font-size: 0.95rem;
+      opacity: 0.85;
     }
 
     .suggestion a {
@@ -75,7 +87,7 @@
     }
 
     .suggestion a:hover {
-      color: #ff5a50;
+      color: color-mix(in srgb, var(--accent) 90%, #ffffff 10%);
     }
 
     @keyframes fadeIn {
@@ -87,6 +99,21 @@
       to {
         opacity: 1;
         transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 500px) {
+      main {
+        margin: 0 1rem;
+        padding: 1.5rem 1.8rem;
+      }
+
+      h1 {
+        font-size: 4rem;
+      }
+
+      p {
+        font-size: 1.05rem;
       }
     }
   </style>
