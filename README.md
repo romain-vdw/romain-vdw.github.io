@@ -4,7 +4,8 @@ TODO:
 N/A Page
 ------
 
-- ???
+- slight bug on safari (the blurred overlay doesn't go all the way down (aka where the searchbar/backbutton/little 3 dots are), neither does the background (it also doesn't go all the way to the top, aka where the time/battery things are))
+- can scroll while .nav-links is open on mobile (make it so that when I scroll the .nav-links closes)
 
 Home Page
 ------
