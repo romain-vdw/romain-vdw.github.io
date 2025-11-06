@@ -75,10 +75,10 @@ if (menuToggle && navLinks && overlay) {
 // ===============================
 // Background preference handling
 // ===============================
-const body = document.body;
 const bgOptions = document.querySelectorAll(".bg-option");
 
 function applyBackground(url, size, repeat = false) {
+  const body = document.body;
   body.style.backgroundImage = url ? `url('${url}')` : "none";
 
   if (repeat) {

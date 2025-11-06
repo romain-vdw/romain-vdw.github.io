@@ -16,13 +16,16 @@
 
 body {
   font-family: sans-serif;
-  background: var(--bg-color);
+  background-color: var(--bg-color);
   color: var(--text-color);
   display: flex;
   flex-direction: column;
   align-items: center;
   transition: background-color var(--transition), color var(--transition);
   min-height: 100vh;
+  min-height: 100dvh;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 main {
@@ -196,6 +199,7 @@ header {
 
   .nav-links.open {
     max-height: calc(100vh - 60px);
+    max-height: calc(100dvh - 60px);
     opacity: 1;
     transform: translateY(0);
     padding: 0.5rem 1rem;
