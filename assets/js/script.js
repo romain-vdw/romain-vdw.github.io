@@ -16,46 +16,45 @@ const menuToggle = document.querySelector(".menu-toggle");
 const navLinks = document.querySelector(".nav-links");
 const overlay = document.querySelector(".nav-overlay");
 
-// helper to close menu
+// Helper: Close menu
 function closeMenu() {
   if (!navLinks) return;
   navLinks.classList.remove("open");
-  if (overlay) overlay.classList.remove("active");
+  overlay?.classList.remove("active");
+  document.body.classList.remove("no-scroll");
   const icon = menuToggle?.querySelector(".material-icons-round");
   if (icon) icon.textContent = "menu";
 }
 
-// helper to open menu
+// Helper: Open menu
 function openMenu() {
   if (!navLinks) return;
   navLinks.classList.add("open");
-  if (overlay) overlay.classList.add("active");
+  overlay?.classList.add("active");
+  document.body.classList.add("no-scroll");
   const icon = menuToggle?.querySelector(".material-icons-round");
   if (icon) icon.textContent = "close";
 }
 
 if (menuToggle && navLinks && overlay) {
+  // Toggle menu
   menuToggle.addEventListener("click", (e) => {
     e.stopPropagation();
-    const isOpen = navLinks.classList.toggle("open");
-    overlay.classList.toggle("active", isOpen);
-    const icon = menuToggle.querySelector(".material-icons-round");
-    if (icon) icon.textContent = isOpen ? "close" : "menu";
+    const isOpen = navLinks.classList.contains("open");
+    if (isOpen) closeMenu();
+    else openMenu();
   });
 
-  // Close menu if user clicks overlay
+  // Close menu when clicking overlay
   overlay.addEventListener("click", () => closeMenu());
 
-  // Close menu when a nav link is clicked (use event delegation)
+  // Close menu when clicking any link
   navLinks.addEventListener("click", (e) => {
-    const a = e.target.closest && e.target.closest("a");
-    if (a) {
-      // for internal navigation close, for external let default happen
-      closeMenu();
-    }
+    const a = e.target.closest("a");
+    if (a) closeMenu();
   });
 
-  // Close menu when clicking anywhere outside the menu (document-level)
+  // Close menu when clicking outside
   document.addEventListener("click", (e) => {
     if (
       !navLinks.contains(e.target) &&
@@ -66,7 +65,7 @@ if (menuToggle && navLinks && overlay) {
     }
   });
 
-  // Close with Escape key
+  // Close menu with Escape key
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && navLinks.classList.contains("open")) closeMenu();
   });

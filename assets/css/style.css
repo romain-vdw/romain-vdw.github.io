@@ -28,6 +28,10 @@ body {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+body.no-scroll {
+  overflow: hidden;
+}
+
 main {
   max-width: 1000px;
   width: 100%;
