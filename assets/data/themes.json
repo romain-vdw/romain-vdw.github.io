@@ -1,0 +1,51 @@
+{
+  "default": {
+    "name": "Default",
+    "accent": "#e53935",
+    "bgColor": "#000000",
+    "bg1Color": "rgba(255, 255, 255, 0.06)",
+    "textColor": "#f0f0f0",
+    "inverseTextColor": "#000000",
+    "preview": "#000000"
+  },
+  "red": {
+    "name": "Red",
+    "accent": "#ff3b30",
+    "bgColor": "#1a0000",
+    "bg1Color": "rgba(255, 59, 48, 0.15)",
+    "textColor": "#fff0f0",
+    "inverseTextColor": "#000000"
+  },
+  "green": {
+    "name": "Green",
+    "accent": "#34c759",
+    "bgColor": "#001a09",
+    "bg1Color": "rgba(52, 199, 89, 0.15)",
+    "textColor": "#eaffea",
+    "inverseTextColor": "#000000"
+  },
+  "blue": {
+    "name": "Blue",
+    "accent": "#007aff",
+    "bgColor": "#001122",
+    "bg1Color": "rgba(0, 122, 255, 0.15)",
+    "textColor": "#e6f0ff",
+    "inverseTextColor": "#000000"
+  },
+  "purple": {
+    "name": "Purple",
+    "accent": "#af52de",
+    "bgColor": "#13001a",
+    "bg1Color": "rgba(175, 82, 222, 0.15)",
+    "textColor": "#f5e6ff",
+    "inverseTextColor": "#000000"
+  },
+  "dark": {
+    "name": "Dark",
+    "accent": "#888888",
+    "bgColor": "#0a0a0a",
+    "bg1Color": "rgba(255, 255, 255, 0.03)",
+    "textColor": "#e0e0e0",
+    "inverseTextColor": "#000000"
+  }
+}

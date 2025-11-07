@@ -1,8 +1,67 @@
-.bg-option {
-  margin: 0.5rem;
-  background: var(--bg1-color);
-  color: white;
-  border: 1px solid var(--accent);
-  padding: 0.5rem;
+/* ===== Grid layouts ===== */
+.bg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+/* ===== Buttons ===== */
+.bg-option,
+.theme-option {
+  border: none;
+  border-radius: 10px;
   cursor: pointer;
+  padding: 0.75rem 1rem;
+  color: white;
+  font-weight: bold;
+  transition: transform 0.2s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  text-shadow: 0 0 6px rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  text-align: center;
+}
+
+.bg-option {
+  aspect-ratio: 1 / 1;
+  min-height: 90px;
+  font-size: 0.9rem;
+}
+
+.theme-option {
+  min-height: 60px;
+  font-size: 0.9rem;
+}
+
+/* Hover effect */
+.bg-option:hover,
+.theme-option:hover {
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
+}
+
+.bg-option:hover {
+  transform: scale(1.06);
+}
+
+.theme-option:hover {
+  transform: translateY(-2px);
+}
+
+/* Active (selected) state */
+.bg-option.active,
+.theme-option.active {
+  outline: 2px solid var(--accent);
+  box-shadow: 0 0 14px var(--text-color);
 }

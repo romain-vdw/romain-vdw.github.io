@@ -1,0 +1,28 @@
+[
+  {
+    "name": "None",
+    "url": "",
+    "preview": "#000000",
+    "repeat": false
+  },
+  {
+    "name": "Cyberpunk City",
+    "url": "/assets/img/cyberpunk_city.jpg",
+    "preview": "/assets/img/cyberpunk_city.jpg",
+    "repeat": false
+  },
+  {
+    "name": "Dirt",
+    "url": "/assets/img/dirt.png",
+    "preview": "/assets/img/dirt.png",
+    "repeat": true,
+    "size": "64px"
+  },
+  {
+    "name": "Dirt Block",
+    "url": "/assets/img/dirt_block.png",
+    "preview": "/assets/img/dirt_block.png",
+    "repeat": true,
+    "size": "128px"
+  }
+]

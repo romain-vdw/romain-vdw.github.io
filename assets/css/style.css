@@ -14,14 +14,27 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  transition:
+    background-color var(--transition),
+    color var(--transition),
+    background-image var(--transition),
+    background var(--transition),
+    filter var(--transition);
+}
+
 body {
   font-family: sans-serif;
   background-color: var(--bg-color);
+  background-position: center center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
   color: var(--text-color);
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: background-color var(--transition), color var(--transition);
   min-height: 100vh;
   min-height: 100dvh;
   padding-top: env(safe-area-inset-top);
@@ -185,7 +198,7 @@ header {
     position: absolute;
     top: 100%;
     left: 0;
-    background: rgba(255, 255, 255, 0.1);
+    background: color-mix(in srgb, var(--bg1-color) 95%, white);
     width: 100%;
     flex-direction: column;
     align-items: flex-start;

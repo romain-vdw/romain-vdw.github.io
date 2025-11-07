@@ -72,45 +72,97 @@ if (menuToggle && navLinks && overlay) {
 }
 
 // ===============================
-// Background preference handling
+// Theme and Background Handling (global)
 // ===============================
-const bgOptions = document.querySelectorAll(".bg-option");
 
+// Global storage for themes and backgrounds
+window.themes = {};
+window.backgrounds = [];
+
+// ---- Apply Background ----
 function applyBackground(url, size, repeat = false) {
   const body = document.body;
-  body.style.backgroundImage = url ? `url('${url}')` : "none";
+  if (!url || url === "none") {
+    body.style.backgroundImage = "none";
+    body.style.backgroundColor = "var(--bg-color)";
+  } else {
+    body.style.backgroundImage = `url('${url}')`;
+  }
 
   if (repeat) {
-    body.style.backgroundSize = size;
+    body.style.backgroundSize = size || "auto";
     body.style.backgroundRepeat = "repeat";
   } else {
     body.style.backgroundSize = "cover";
     body.style.backgroundRepeat = "no-repeat";
   }
+
   localStorage.setItem(
     "customBackground",
     JSON.stringify({ url, size, repeat })
   );
 }
 
-function loadBackground() {
-  const saved = localStorage.getItem("customBackground");
-  if (!saved) return;
-  try {
-    const { url, size, repeat } = JSON.parse(saved);
-    applyBackground(url, size, repeat);
-  } catch (e) {
-    console.error("Failed to parse saved background:", e);
+// ---- Apply Theme ----
+function applyTheme(name, smooth = false) {
+  const theme = window.themes?.[name];
+  if (!theme) return;
+
+  const root = document.documentElement;
+  const apply = () => {
+    root.style.setProperty("--accent", theme.accent);
+    root.style.setProperty("--bg-color", theme.bgColor);
+    root.style.setProperty("--bg1-color", theme.bg1Color);
+    root.style.setProperty("--text-color", theme.textColor);
+    root.style.setProperty("--inverse-text-color", theme.inverseTextColor);
+  };
+
+  if (smooth) {
+    document.body.style.transition = "opacity 0.3s ease";
+    document.body.style.opacity = 0;
+    setTimeout(() => {
+      apply();
+      document.body.style.opacity = 1;
+    }, 300);
+  } else {
+    apply();
+  }
+
+  localStorage.setItem("selectedTheme", name);
+}
+
+// ---- Load Saved Settings ----
+function loadSettings() {
+  const savedTheme = localStorage.getItem("selectedTheme");
+  if (savedTheme && window.themes[savedTheme]) applyTheme(savedTheme);
+
+  const savedBg = localStorage.getItem("customBackground");
+  if (savedBg) {
+    try {
+      const { url, size, repeat } = JSON.parse(savedBg);
+      applyBackground(url, size, repeat);
+    } catch (e) {
+      console.error("Failed to parse background settings:", e);
+    }
   }
 }
 
-for (const option of bgOptions) {
-  option.addEventListener("click", () => {
-    const url = option.dataset.bg;
-    const size = option.dataset.size;
-    const repeat = option.dataset.repeat === "true";
-    applyBackground(url, size, repeat);
-  });
+// ---- Load themes/backgrounds JSON globally ----
+async function preloadSettingsData() {
+  try {
+    const [themeData, bgData] = await Promise.all([
+      fetch("/assets/data/themes.json").then((r) => r.json()),
+      fetch("/assets/data/backgrounds.json").then((r) => r.json()),
+    ]);
+
+    window.themes = themeData;
+    window.backgrounds = bgData;
+
+    // Apply saved user settings after data is ready
+    loadSettings();
+  } catch (err) {
+    console.error("Failed to load settings data:", err);
+  }
 }
 
-loadBackground();
+document.addEventListener("DOMContentLoaded", preloadSettingsData);
