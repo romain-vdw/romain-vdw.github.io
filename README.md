@@ -34,6 +34,8 @@ Minecraft Page
 - Show last updated time for each server
 - Add a refresh button per server
 - Show uptime per server
+- Fix "Online Players: [object Object], [object Object]"
+- Add port of the server if it's not the default port "25565"
 
 About Page
 ------
