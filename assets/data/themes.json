@@ -5,8 +5,7 @@
     "bgColor": "#000000",
     "bg1Color": "rgba(255, 255, 255, 0.06)",
     "textColor": "#f0f0f0",
-    "inverseTextColor": "#000000",
-    "preview": "#000000"
+    "inverseTextColor": "#000000"
   },
   "red": {
     "name": "Red",

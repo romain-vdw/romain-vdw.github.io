@@ -4,7 +4,6 @@ TODO:
 Priority
 ------
 
-- highlight active background (the active background is not highlighted when opening settings page or refreshing)
 - address the default color blinking when loading a page (the navbar,background,accent,etc... basically everything from :root "blinks" for a moment when loading a page (opening another page or refreshing))
 - make the 404 page use the selected background and theme
 
@@ -27,6 +26,7 @@ Settings Page
 ------
 
 - Add an animated starfield (space theme)
+- Color picker for custom themes
 
 Minecraft Page
 ------
