@@ -1,3 +1,4 @@
 [
-  { "name": "Only Friends Server", "ip": "mc.rom1.be" }
+  { "name": "Only Friends Server", "ip": "mc.rom1.be" },
+  { "name": "Extra Server", "ip": "mc.rom1.be:25566" }
 ]
