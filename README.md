@@ -5,7 +5,6 @@ Priority
 ------
 
 - address the default color blinking when loading a page (the navbar,background,accent,etc... basically everything from :root "blinks" for a moment when loading a page (opening another page or refreshing))
-- make the 404 page use the selected background and theme
 
 N/A Page
 ------
