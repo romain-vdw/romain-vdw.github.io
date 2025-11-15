@@ -70,12 +70,6 @@ if (menuToggle && navLinks && overlay) {
 }
 
 // ===============================
-// GLOBAL THEME + BACKGROUND DATA
-// ===============================
-window.themes = {};
-window.backgrounds = [];
-
-// ===============================
 // APPLY BACKGROUND
 // ===============================
 function applyBackground(url, size, repeat = false) {
@@ -128,49 +122,3 @@ function applyTheme(name, smooth = false) {
 
   localStorage.setItem("selectedTheme", name);
 }
-
-// ===============================
-// LOAD SAVED USER SETTINGS
-// ===============================
-function loadSettings() {
-  const savedTheme = localStorage.getItem("selectedTheme");
-  if (savedTheme && window.themes[savedTheme]) {
-    applyTheme(savedTheme);
-  }
-
-  const savedBg = localStorage.getItem("customBackground");
-  if (savedBg) {
-    try {
-      const data = JSON.parse(savedBg);
-      applyBackground(data.url, data.size, data.repeat);
-    } catch (e) {
-      console.error("Error loading saved background", e);
-    }
-  }
-}
-
-// ===============================
-// LOAD THEMES + BACKGROUNDS
-// ===============================
-async function preloadSettingsData() {
-  try {
-    const [themeData, bgData] = await Promise.all([
-      fetch("/assets/data/themes.json").then((r) => r.json()),
-      fetch("/assets/data/backgrounds.json").then((r) => r.json()),
-    ]);
-
-    window.themes = themeData;
-    window.backgrounds = bgData;
-
-    // Apply saved user settings after data is ready
-    loadSettings();
-
-    // Tell settings.js that everything is ready
-    document.dispatchEvent(new Event("settingsDataReady"));
-  } catch (e) {
-    console.error("Failed to load settings:", e);
-  }
-}
-
-// Start loading as soon as DOM is ready
-document.addEventListener("DOMContentLoaded", preloadSettingsData);

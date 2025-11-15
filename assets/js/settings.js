@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("settingsDataReady", () => {
   const themeContainer = document.querySelector(".theme-grid");
   const bgContainer = document.querySelector(".bg-grid");
 
@@ -7,16 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // Wait until themes AND backgrounds exist (loaded by script.js)
-  const waitForData = setInterval(() => {
-    if (window.themes && window.backgrounds) {
-      clearInterval(waitForData);
-
-      generateThemeButtons();
-      generateBackgroundButtons();
-      highlightActiveOptions();
-    }
-  }, 50);
+  generateThemeButtons();
+  generateBackgroundButtons();
+  highlightActiveOptions();
 
   // ===========================
   // Generate Theme Buttons
@@ -28,15 +21,10 @@ document.addEventListener("DOMContentLoaded", () => {
       btn.dataset.theme = key;
       btn.textContent = theme.name;
 
-      // Preview (bg1Color overlay + bgColor)
       btn.style.background = `
-        linear-gradient(
-          ${theme.bg1Color},
-          ${theme.bg1Color}
-        ),
+        linear-gradient(${theme.bg1Color}, ${theme.bg1Color}),
         ${theme.bgColor}
       `;
-
       btn.style.color = theme.textColor;
 
       themeContainer.appendChild(btn);
@@ -63,7 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
       btn.dataset.bg = bg.url || "none";
       btn.textContent = bg.name;
 
-      // Preview
       if (bg.preview.startsWith("#")) {
         btn.style.background = bg.preview;
       } else {
@@ -87,20 +74,18 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ===========================
-  // Highlight currently active items
+  // Highlight Active
   // ===========================
   function highlightActiveOptions() {
-    // ---- THEME ----
     const savedTheme = localStorage.getItem("selectedTheme") || "default";
 
     document.querySelectorAll(".theme-option").forEach((btn) => {
       btn.classList.toggle("active", btn.dataset.theme === savedTheme);
     });
 
-    // ---- BACKGROUND ----
     let savedBg = "none";
-
     const stored = localStorage.getItem("customBackground");
+
     if (stored) {
       try {
         savedBg = JSON.parse(stored).url || "none";
