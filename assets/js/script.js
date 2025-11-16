@@ -72,18 +72,34 @@ if (menuToggle && navLinks && overlay) {
 // ===============================
 // APPLY BACKGROUND
 // ===============================
-function applyBackground(url, size, repeat = false) {
-  const body = document.body;
+function applyBackground(url, size = null, repeat = false) {
+  const body = document.body.style;
 
-  if (!url || url === "none") {
-    body.style.backgroundImage = "none";
-    body.style.backgroundColor = "var(--bg-color)";
-  } else {
-    body.style.backgroundImage = `url('${url}')`;
+  if (!url) {
+    // No background
+    document.body.removeAttribute("style");
+    localStorage.setItem(
+      "customBackground",
+      JSON.stringify({ url: "", repeat: false })
+    );
+    return;
   }
 
-  body.style.backgroundRepeat = repeat ? "repeat" : "no-repeat";
-  body.style.backgroundSize = size ? size || "auto" : "cover";
+  body.backgroundImage = `url('${url}')`;
+
+  if (repeat) {
+    // Pattern backgrounds
+    body.backgroundRepeat = "repeat";
+    body.backgroundSize = size || "auto";
+    body.backgroundPosition = "top left";
+    body.backgroundAttachment = "scroll";
+  } else {
+    // Full backgrounds
+    body.backgroundRepeat = "no-repeat";
+    body.backgroundSize = "cover";
+    body.backgroundPosition = "center center";
+    body.backgroundAttachment = "fixed";
+  }
 
   localStorage.setItem(
     "customBackground",

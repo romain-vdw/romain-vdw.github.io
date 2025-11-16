@@ -27,10 +27,6 @@ body {
 body {
   font-family: sans-serif;
   background-color: var(--bg-color);
-  background-position: center center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
   color: var(--text-color);
   display: flex;
   flex-direction: column;

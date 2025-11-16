@@ -23,15 +23,30 @@
       root.setProperty("--inverse-text-color", theme.inverseTextColor);
     }
 
-    // Apply saved background immediately too
+    // Apply saved background
     const savedBg = JSON.parse(
       localStorage.getItem("customBackground") || "{}"
     );
-    if (savedBg.url) {
+
+    if (!savedBg.url) {
+      // No background → use theme defaults
+      document.body.removeAttribute("style");
+    } else {
       const body = document.body.style;
-      body.backgroundImage = `url(${savedBg.url})`;
-      body.backgroundSize = savedBg.size || "cover";
-      body.backgroundRepeat = savedBg.repeat || "no-repeat";
+
+      body.backgroundImage = `url('${savedBg.url}')`;
+
+      if (savedBg.repeat) {
+        body.backgroundRepeat = "repeat";
+        body.backgroundSize = savedBg.size || "auto";
+        body.backgroundPosition = "top left";
+        body.backgroundAttachment = "scroll";
+      } else {
+        body.backgroundRepeat = "no-repeat";
+        body.backgroundSize = "cover";
+        body.backgroundPosition = "center center";
+        body.backgroundAttachment = "fixed";
+      }
     }
 
     // Notify all other scripts
