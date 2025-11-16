@@ -1,18 +1,163 @@
-.server-icon {
-  width: 64px;
-  height: 64px;
-  image-rendering: pixelated;
+/* =========================================
+   Server Icon — Top-Right Floating
+========================================= */
+.mc-server-card .server-icon-wrap {
   position: absolute;
-  top: 1rem;
-  right: 1.3rem;
+  top: 0.8rem;
+  right: 0.8rem;
+  z-index: 2;
 }
 
+.server-icon {
+  width: 4rem;
+  height: 4rem;
+  image-rendering: pixelated;
+  border-radius: 6px;
+}
+
+/* =========================================
+   Card Layout
+========================================= */
 .card {
   position: relative;
   padding: 1rem;
-  line-height: 1.5;
+  line-height: 1.45;
 }
 
-.card .motd {
+/* Card container */
+.mc-server-card {
+  position: relative;
+  overflow: visible;
+  transition: transform 0.12s ease;
+}
+
+/* =========================================
+   Header
+========================================= */
+.server-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.2rem;
+  padding-right: 0;
+  /* NEW: no padding needed */
+}
+
+.mc-server-title {
+  width: calc(100% - 4rem);
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* =========================================
+   Body
+========================================= */
+.server-body {
+  margin-top: 0.8rem;
+  /* No right padding — content can go full width */
+}
+
+.players-wrap .players-summary {
   margin: 0.25rem 0;
+  font-weight: 600;
+}
+
+.player-list {
+  margin: 0.15rem 0;
+  opacity: 0.9;
+}
+
+/* =========================================
+   Address Line
+========================================= */
+.address-line {
+  margin-top: 0.4rem;
+  font-size: 0.95rem;
+  color: var(--text-color);
+}
+
+.address-value {
+  cursor: pointer;
+  text-decoration: underline dotted;
+  margin-left: 0.25rem;
+  transition: opacity 0.2s ease;
+}
+
+.address-value:hover {
+  opacity: 0.7;
+}
+
+/* =========================================
+   MOTD
+========================================= */
+.motd-wrap {
+  margin: 0.3rem 0;
+}
+
+/* =========================================
+   Footer (allowed full width!)
+========================================= */
+.server-footer {
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  /* ensures full width */
+}
+
+.footer-right {
+  display: flex;
+  text-align: right;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.small-muted {
+  color: rgba(240, 240, 240, 0.55);
+  font-size: 0.83rem;
+}
+
+/* =========================================
+   Toast (near clicked element)
+========================================= */
+.toast {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s ease, transform .18s ease;
+  z-index: 3000;
+  transform: translateY(-4px);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =========================================
+   Updating State
+========================================= */
+.state-line.updating {
+  opacity: 0.55;
+  transition: opacity 0.2s linear;
+}
+
+/* =========================================
+   Mobile
+========================================= */
+@media (max-width: 600px) {
+
+  .server-footer {
+    justify-content: space-between;
+  }
+
+  .footer-right {
+    text-align: left;
+  }
 }
