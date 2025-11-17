@@ -6,6 +6,106 @@
     "repeat": false
   },
   {
+    "name": "Pixel Starfield",
+    "type": "animated-canvas",
+    "preview": "pixel",
+    "options": {
+      "type": "pixel",
+      "count": 250,
+      "colors": ["#ffffff"],
+      "sizeRange": [2, 4],
+      "speedRange": [0.1, 1]
+    }
+  },
+  {
+    "name": "Hyperspeed Starfield",
+    "type": "animated-canvas",
+    "preview": "pixel",
+    "options": {
+      "type": "hyperspeed",
+      "count": 200,
+      "colors": ["#fff"],
+      "sizeRange": [2, 3],
+      "speedRange": [2, 6]
+    }
+  },
+  {
+    "name": "Deep Space",
+    "type": "animated-canvas",
+    "preview": "smooth",
+    "options": {
+      "type": "smooth",
+      "count": 150,
+      "colors": ["#ffffff", "#ccccff"],
+      "sizeRange": [1, 2],
+      "speedRange": [0.05, 0.3]
+    }
+  },
+  {
+    "name": "Colorful Nebula Stars",
+    "type": "animated-canvas",
+    "preview": "smooth",
+    "options": {
+      "type": "smooth",
+      "count": 250,
+      "colors": ["#ff5555", "#55ff55", "#5555ff", "#ffff55", "#ff55ff"],
+      "sizeRange": [2, 4],
+      "speedRange": [0.1, 1]
+    }
+  },
+  {
+    "name": "Minecraft-style Stars",
+    "type": "animated-canvas",
+    "preview": "pixel",
+    "options": {
+      "type": "minecraft",
+      "count": 250,
+      "colors": ["#ffffff", "#aaaaaa", "#dddddd"],
+      "sizeRange": [3, 5],
+      "speedRange": [0.1, 1]
+    }
+  },
+  {
+    "name": "Smooth Starfield",
+    "type": "animated-canvas",
+    "preview": "smooth",
+    "options": {
+      "type": "smooth",
+      "count": 300,
+      "colors": ["#ffffff"],
+      "sizeRange": [1, 3],
+      "speedRange": [0.1, 1]
+    }
+  },
+  {
+    "name": "Parallax Multi-Layer Starfield",
+    "type": "animated-canvas",
+    "preview": "pixel",
+    "options": {
+      "type": "parallax",
+      "layers": [
+        {
+          "count": 100,
+          "colors": ["#fff"],
+          "sizeRange": [1, 2],
+          "speedMultiplier": 0.3
+        },
+        {
+          "count": 50,
+          "colors": ["#fff"],
+          "sizeRange": [2, 3],
+          "speedMultiplier": 0.6
+        },
+        {
+          "count": 30,
+          "colors": ["#fff"],
+          "sizeRange": [3, 4],
+          "speedMultiplier": 1
+        }
+      ]
+    }
+  },
+  {
     "name": "Cyberpunk City",
     "url": "/assets/img/cyberpunk_city.jpg",
     "preview": "/assets/img/cyberpunk_city.jpg",

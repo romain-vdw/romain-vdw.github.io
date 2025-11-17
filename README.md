@@ -18,8 +18,8 @@
 
 ## Settings Page
 
-- Add an animated starfield (space theme)
-- Color picker for custom themes
+- Remove similar Starfields
+- Add correct hyperdrive (like every "star" goes away from the center point like going lightspeed and seeing the stars warp around you)
 
 ## Minecraft Page
 

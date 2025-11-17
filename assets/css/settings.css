@@ -32,6 +32,23 @@
   align-items: flex-end;
   justify-content: center;
   text-align: center;
+  position: relative;
+}
+
+.starfield-preview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.bg-option > .bg-label {
+  position: relative;
+  z-index: 1;
 }
 
 .bg-option {
