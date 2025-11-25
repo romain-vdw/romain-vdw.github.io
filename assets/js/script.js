@@ -75,7 +75,6 @@ if (menuToggle && navLinks && overlay) {
 
 /**
  * removeStarfield()
- * Removes any full-screen starfield canvas injected by applyAnimatedStarfield.
  */
 function removeStarfield() {
   const old = document.getElementById("starfield-canvas");
@@ -83,9 +82,9 @@ function removeStarfield() {
 }
 
 /**
- * applyAnimatedStarfield(options)
- * Creates a full screen canvas and starts animation. Clears previous starfield first.
- * options = { type, count, colors, sizeRange, speedRange, layers }
+ * applyAnimatedStarfield(name, options)
+ * - name: background name (saved to localStorage)
+ * - options: options object from backgrounds.json
  */
 function applyAnimatedStarfield(name, options = null) {
   removeStarfield();
@@ -93,30 +92,32 @@ function applyAnimatedStarfield(name, options = null) {
   const canvas = document.createElement("canvas");
   canvas.id = "starfield-canvas";
   canvas.style.position = "fixed";
-  canvas.style.top = 0;
-  canvas.style.left = 0;
+  canvas.style.inset = "0";
   canvas.style.width = "100%";
   canvas.style.height = "100%";
   canvas.style.zIndex = "-1";
   canvas.style.imageRendering = "pixelated";
   document.body.appendChild(canvas);
 
+  // If options not provided, try reading from localStorage fallback
   if (!options) {
     const savedBg = JSON.parse(
       localStorage.getItem("customBackground") || "{}"
     );
     options = savedBg.options || {
       type: "pixel",
-      count: 250,
+      count: 200,
       colors: ["#fff"],
       sizeRange: [2, 4],
       speedRange: [0.1, 1],
     };
+    name = name || savedBg.name || "Starfield";
   }
 
+  // start fullscreen engine
   startStarfieldFull(canvas, options);
 
-  // Save full background selection with name
+  // Save the selection
   localStorage.setItem(
     "customBackground",
     JSON.stringify({ name, type: "animated-canvas", options })
@@ -125,15 +126,21 @@ function applyAnimatedStarfield(name, options = null) {
 
 /**
  * startStarfieldFull(canvas, options)
- * Fullscreen starfield engine with variants
+ * Unified full-screen starfield engine with variants:
+ * - options.type = "pixel" | "smooth" | "hyperspeed" | "hyperdrive" | "parallax"
  */
 function startStarfieldFull(canvas, options = {}) {
   const ctx = canvas.getContext("2d");
   const DPR = Math.max(1, window.devicePixelRatio || 1);
 
+  // resize handling
+  let w = 0;
+  let h = 0;
   function resize() {
-    canvas.width = Math.floor(window.innerWidth * DPR);
-    canvas.height = Math.floor(window.innerHeight * DPR);
+    w = Math.floor(window.innerWidth * DPR);
+    h = Math.floor(window.innerHeight * DPR);
+    canvas.width = w;
+    canvas.height = h;
     canvas.style.width = window.innerWidth + "px";
     canvas.style.height = window.innerHeight + "px";
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
@@ -141,68 +148,243 @@ function startStarfieldFull(canvas, options = {}) {
   resize();
   window.addEventListener("resize", resize);
 
-  let stars = [];
+  // helpers: random in range
+  const rand = (a, b) => a + Math.random() * (b - a);
 
-  if (options.type === "parallax") {
-    // Multiple layers
-    options.layers.forEach((layer, i) => {
-      for (let j = 0; j < layer.count; j++) {
-        const colorArray = layer.colors || ["#fff"];
-        stars.push({
-          layer: i,
-          x: (Math.random() * canvas.width) / DPR,
-          y: (Math.random() * canvas.height) / DPR,
-          size:
-            layer.sizeRange[0] +
-            Math.random() * (layer.sizeRange[1] - layer.sizeRange[0]),
-          speedX: (Math.random() - 0.5) * layer.speedMultiplier,
-          speedY: (Math.random() - 0.5) * layer.speedMultiplier,
-          color: colorArray[Math.floor(Math.random() * colorArray.length)],
+  // star containers
+  let starLayers = []; // array of layers; each layer is array of star objects
+  let lastTs = performance.now();
+
+  // initialize based on type
+  function init() {
+    starLayers = [];
+
+    // PARALLAX (multi-layer) - layers provided in options.layers
+    if (options.type === "parallax" && Array.isArray(options.layers)) {
+      for (const layerOpt of options.layers) {
+        const layer = [];
+        const count = layerOpt.count || 60;
+        for (let i = 0; i < count; i++) {
+          layer.push({
+            x: Math.random() * window.innerWidth,
+            y: Math.random() * window.innerHeight,
+            size: rand(
+              layerOpt.sizeRange?.[0] || 1,
+              layerOpt.sizeRange?.[1] || 2
+            ),
+            vx: (Math.random() - 0.5) * (layerOpt.speedMultiplier || 0.3),
+            vy: (Math.random() - 0.5) * (layerOpt.speedMultiplier || 0.3),
+            color: (layerOpt.colors || ["#fff"])[
+              Math.floor(Math.random() * (layerOpt.colors || ["#fff"]).length)
+            ],
+            // optional redshift factor
+            redshift: layerOpt.redshift || 0,
+          });
+        }
+        starLayers.push({ type: "layer", items: layer, opt: layerOpt });
+      }
+      return;
+    }
+
+    // Default single-layer starfield (pixel / smooth / hyperspeed)
+    const type = options.type || "smooth";
+
+    // hyperspeed: longer, faster streaks (but still forward motion not radial)
+    if (type === "hyperspeed") {
+      const count = options.count || 200;
+      const layer = [];
+      const sizeRange = options.sizeRange || [1.5, 3];
+      const speedRange = options.speedRange || [2, 6];
+      const colors = options.colors || ["#fff"];
+      for (let i = 0; i < count; i++) {
+        layer.push({
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+          size: rand(sizeRange[0], sizeRange[1]),
+          vx: (Math.random() - 0.5) * rand(speedRange[0], speedRange[1]) * 6,
+          vy: (Math.random() - 0.5) * rand(speedRange[0], speedRange[1]) * 6,
+          color: colors[Math.floor(Math.random() * colors.length)],
         });
       }
-    });
-  } else {
+      starLayers.push({ type: "layer", items: layer, opt: options });
+      return;
+    }
+
+    // hyperdrive: forward-travel (3D z-based projection)
+    if (type === "hyperdrive") {
+      const countH = options.count || 350;
+      const maxSpeed = options.maxSpeed || 100; // controls forward speed
+      const minLength = options.minLength ?? 1;
+      const maxLength =
+        options.maxLength ??
+        Math.max(window.innerWidth, window.innerHeight) * 0.35;
+      const centerBias = options.centerBias ?? 0.35; // 0..1, lower = more center concentration
+      const starColor = options.starColor || "#ffffff";
+      const lineWidth = options.lineWidth ?? 0.9;
+
+      const layer = [];
+      for (let i = 0; i < countH; i++) {
+        // spawn coordinates relative to center
+        const angle = Math.random() * Math.PI * 2;
+        // biased radius: random^power -> cluster near center
+        const r =
+          Math.pow(Math.random(), 1 / Math.max(0.01, centerBias)) *
+          Math.min(window.innerWidth, window.innerHeight) *
+          0.15;
+        const x = Math.cos(angle) * r;
+        const y = Math.sin(angle) * r;
+
+        // x,y centered coords, z depth in (0.01..1]
+        layer.push({
+          // center-relative coordinates (project later)
+          x0: x,
+          y0: y,
+          z: rand(0.01, 1.0), // depth (small -> very close)
+          speed: rand(maxSpeed * 0.25, maxSpeed),
+          progress: Math.random(), // 0..1 life progress (randomize to avoid sync)
+          growRate: rand(0.6, 1.4), // speed multiplier for growth
+          minLength,
+          maxLength,
+          color: starColor,
+          lineWidth,
+        });
+      }
+      starLayers.push({ type: "hyperdrive", items: layer, opt: options });
+      return;
+    }
+
+    // DEFAULT single-layer (pixel/smooth)
     const count = options.count || 250;
+    const sizeRange = options.sizeRange || [1, 3];
+    const speedRange = options.speedRange || [0.05, 0.5];
+    const colors = options.colors || ["#fff"];
+
+    const generic = [];
     for (let i = 0; i < count; i++) {
-      const sizeRange = options.sizeRange || [2, 4];
-      const speedRange = options.speedRange || [0.1, 1];
-      const colorArray = options.colors || ["#fff"];
-      stars.push({
-        x: (Math.random() * canvas.width) / DPR,
-        y: (Math.random() * canvas.height) / DPR,
-        size: sizeRange[0] + Math.random() * (sizeRange[1] - sizeRange[0]),
-        speedX:
-          (Math.random() - 0.5) * (speedRange[1] - speedRange[0]) +
-          Math.sign(Math.random() - 0.5) * speedRange[0],
-        speedY:
-          (Math.random() - 0.5) * (speedRange[1] - speedRange[0]) +
-          Math.sign(Math.random() - 0.5) * speedRange[0],
-        color: colorArray[Math.floor(Math.random() * colorArray.length)],
+      generic.push({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        size: rand(sizeRange[0], sizeRange[1]),
+        vx: (Math.random() - 0.5) * rand(speedRange[0], speedRange[1]),
+        vy: (Math.random() - 0.5) * rand(speedRange[0], speedRange[1]),
+        color: colors[Math.floor(Math.random() * colors.length)],
       });
     }
+    starLayers.push({ type: "layer", items: generic, opt: options });
   }
 
+  init();
+
+  // animation loop (handles different types)
   let rafId;
-  const animate = () => {
+  function frame(now) {
+    const dt = Math.max(0.001, (now - lastTs) / 1000);
+    lastTs = now;
+
+    // clear (black background)
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, canvas.width / DPR, canvas.height / DPR);
 
-    for (const s of stars) {
-      ctx.fillStyle = s.color;
-      ctx.fillRect(s.x, s.y, s.size, s.size);
-      s.x += s.speedX;
-      s.y += s.speedY;
+    for (const layerWrapper of starLayers) {
+      if (layerWrapper.type === "layer") {
+        const items = layerWrapper.items;
+        for (const s of items) {
+          // move
+          s.x += s.vx * dt * 60;
+          s.y += s.vy * dt * 60;
 
-      if (s.x < 0) s.x = canvas.width / DPR;
-      if (s.x > canvas.width / DPR) s.x = 0;
-      if (s.y < 0) s.y = canvas.height / DPR;
-      if (s.y > canvas.height / DPR) s.y = 0;
+          // wrap
+          if (s.x < 0) s.x = window.innerWidth;
+          if (s.x > window.innerWidth) s.x = 0;
+          if (s.y < 0) s.y = window.innerHeight;
+          if (s.y > window.innerHeight) s.y = 0;
+
+          ctx.fillStyle = s.color;
+          const size = Math.max(1, s.size);
+          ctx.fillRect(s.x, s.y, size, size);
+        }
+      } else if (layerWrapper.type === "hyperdrive") {
+        // hyperdrive: center projection with growth
+        const items = layerWrapper.items;
+        const cx = window.innerWidth / 2;
+        const cy = window.innerHeight / 2;
+        const baseScale = Math.min(window.innerWidth, window.innerHeight) * 0.6;
+
+        for (const s of items) {
+          // progress: grows, then when reaches 1 respawn
+          s.progress += (s.speed / 2000) * s.growRate * dt * 60;
+          if (s.progress >= 1) {
+            // respawn near edge (keep variety)
+            const angle = Math.random() * Math.PI * 2;
+            const r =
+              Math.pow(
+                Math.random(),
+                1 / Math.max(0.01, options.centerBias ?? 0.35)
+              ) *
+              Math.min(window.innerWidth, window.innerHeight) *
+              0.15;
+            s.x0 = Math.cos(angle) * r;
+            s.y0 = Math.sin(angle) * r;
+            s.z = 0.9 + Math.random() * 0.1;
+            s.progress = 0;
+            s.speed = rand(
+              (options.maxSpeed || 100) * 0.25,
+              options.maxSpeed || 100
+            );
+            continue;
+          }
+
+          // perspective projection (z moves closer as progress increases: simulate forward travel)
+          // map z to an exponential feel: effectiveZ decreases with progress
+          const effZ = Math.max(0.02, s.z * (1 - 0.95 * s.progress));
+          const projFactor = baseScale / (effZ * baseScale + 1);
+
+          const sx = cx + s.x0 * projFactor;
+          const sy = cy + s.y0 * projFactor;
+
+          // velocity outward radial (direction from center to star projected point)
+          const dx = sx - cx;
+          const dy = sy - cy;
+          const radialLen = Math.hypot(dx, dy) || 1;
+          const ux = dx / radialLen;
+          const uy = dy / radialLen;
+
+          // length grows with progress and inverse of z (nearer stars streak more)
+          const growth = s.progress; // 0..1 smooth growth
+          const len = Math.min(
+            s.maxLength,
+            Math.max(s.minLength, (1 / effZ) * (s.speed / 60) * (0.6 + growth))
+          );
+
+          // draw line from a small offset behind the star to the forward end
+          const back = -len * 0.08; // short tail behind
+          const x1 = sx + ux * back;
+          const y1 = sy + uy * back;
+          const x2 = sx + ux * len;
+          const y2 = sy + uy * len;
+
+          ctx.strokeStyle = s.color;
+          ctx.lineWidth = Math.max(0.5, s.lineWidth || 0.9);
+          ctx.lineCap = "round";
+
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          ctx.stroke();
+
+          // small head bright dot to emulate lens flare
+          ctx.fillStyle = s.color;
+          ctx.fillRect(sx - 0.5, sy - 0.5, 1.5, 1.5);
+        }
+      }
     }
 
-    rafId = requestAnimationFrame(animate);
-  };
-  animate();
+    rafId = requestAnimationFrame(frame);
+  }
 
+  rafId = requestAnimationFrame(frame);
+
+  // cleanup on removal
   const observer = new MutationObserver(() => {
     if (!document.body.contains(canvas)) {
       cancelAnimationFrame(rafId);
