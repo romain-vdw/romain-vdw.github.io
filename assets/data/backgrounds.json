@@ -10,13 +10,14 @@
     "type": "animated-canvas",
     "options": {
       "type": "hyperdrive",
-      "count": 350,
+      "count": 600,
       "maxSpeed": 30,
       "minLength": 1,
-      "maxLength": 150,
-      "centerBias": 5,
+      "maxLength": 1,
+      "centerBias": 2,
       "starColor": "#ffffff",
-      "lineWidth": 1.2
+      "lineWidth": 1.2,
+      "fadeInSpeed": 0.02
     }
   },
   {
@@ -122,27 +123,14 @@
     "type": "animated-canvas",
     "options": {
       "type": "hyperdrive",
-      "count": 350,
+      "count": 400,
       "maxSpeed": 200,
-      "minLength": 10,
+      "minLength": 1,
       "maxLength": 150,
       "centerBias": 3,
       "starColor": "#ffffff",
-      "lineWidth": 1
-    }
-  },
-  {
-    "name": "Hyperdrive (Centered)",
-    "type": "animated-canvas",
-    "options": {
-      "type": "hyperdrive",
-      "count": 350,
-      "maxSpeed": 120,
-      "minLength": 1,
-      "maxLength": 120,
-      "centerBias": 1,
-      "starColor": "#ffffff",
-      "lineWidth": 0.9
+      "lineWidth": 1,
+      "fadeInSpeed": 0.02
     }
   },
   {

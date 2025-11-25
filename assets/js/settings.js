@@ -155,38 +155,47 @@ function startStarfieldPreview(canvas, options = {}) {
     }
 
     if (type === "hyperdrive") {
-      // small hyperdrive preview (center origin, very short streaks)
+      const fadeInSpeed = options.fadeInSpeed ?? 0.02;
+      const fadeInEnabled = options.fadeIn !== false;
+
       const cnt = Math.max(
         6,
-        Math.floor((options.count || 200) * scaleFactor * 0.06)
+        Math.floor((options.count || 200) * scaleFactor * 1)
       );
+
       for (let i = 0; i < cnt; i++) {
         const angle = Math.random() * Math.PI * 2;
         const r =
           Math.pow(
             Math.random(),
-            1 / Math.max(0.01, options.centerBias ?? 0.35)
+            1 / Math.max(0.01, options.centerBias ?? 0.7)
           ) *
           Math.min(canvas.width / DPR, canvas.height / DPR) *
-          0.08;
+          0.1;
+
         stars.push({
           x0: Math.cos(angle) * r,
           y0: Math.sin(angle) * r,
-          z: rand(0.02, 1),
+          z: rand(0.2, 1),
           speed: rand(
-            (options.maxSpeed || 100) * 0.25,
-            options.maxSpeed || 100
+            (options.maxSpeed || 120) * 0.25,
+            options.maxSpeed || 120
           ),
-          progress: Math.random(),
-          growRate: rand(0.8, 1.6),
+          progress: Math.random() * 0.45,
+          growRate: rand(0.6, 1.4),
           minLength: options.minLength ?? 1,
-          maxLength: Math.min(40, options.maxLength ?? 40),
+          maxLength:
+            options.maxLength ??
+            Math.max(canvas.width / DPR, canvas.height / DPR) * 0.28,
           color: options.starColor || "#fff",
-          lineWidth: options.lineWidth ?? 0.9,
+          lineWidth: options.lineWidth ?? 1.0,
+
+          // fade-in
+          life: 0,
+          fadeInSpeed: fadeInSpeed,
         });
       }
 
-      // preview uses its own simple animator
       let raf = null;
       const animatePreview = () => {
         ctx.fillStyle = "#000";
@@ -198,61 +207,86 @@ function startStarfieldPreview(canvas, options = {}) {
           Math.min(canvas.width / DPR, canvas.height / DPR) * 0.6;
 
         for (const s of stars) {
-          s.progress += (s.speed / 2000) * s.growRate * 0.8 * (1 / 60);
+          // progress update
+          s.progress +=
+            (s.speed / (options.maxSpeed || 120) / 3.2) *
+            s.growRate *
+            0.9 *
+            (1 / 60);
+
+          // respawn
           if (s.progress >= 1) {
-            // respawn
             const angle = Math.random() * Math.PI * 2;
             const r =
               Math.pow(
                 Math.random(),
-                1 / Math.max(0.01, options.centerBias ?? 0.35)
+                1 / Math.max(0.01, options.centerBias ?? 0.7)
               ) *
               Math.min(canvas.width / DPR, canvas.height / DPR) *
-              0.08;
+              0.1;
+
             s.x0 = Math.cos(angle) * r;
             s.y0 = Math.sin(angle) * r;
-            s.z = 0.9 + Math.random() * 0.1;
+            s.z = rand(0.2, 1);
             s.progress = 0;
             s.speed = rand(
-              (options.maxSpeed || 100) * 0.25,
-              options.maxSpeed || 100
+              (options.maxSpeed || 120) * 0.25,
+              options.maxSpeed || 120
             );
+
+            s.life = 0;
             continue;
           }
 
-          const effZ = Math.max(0.02, s.z * (1 - 0.95 * s.progress));
+          // fade-in
+          if (fadeInEnabled) {
+            s.life = Math.min(1, s.life + s.fadeInSpeed);
+          } else {
+            s.life = 1;
+          }
+          ctx.globalAlpha = s.life;
+
+          // perspective
+          const effZ = Math.max(0.02, s.z * (1 - 0.92 * s.progress));
           const projFactor = baseScale / (effZ * baseScale + 1);
           const sx = cx + s.x0 * projFactor;
           const sy = cy + s.y0 * projFactor;
 
+          // radial direction
           const dx = sx - cx;
           const dy = sy - cy;
           const radialLen = Math.hypot(dx, dy) || 1;
           const ux = dx / radialLen;
           const uy = dy / radialLen;
 
+          // full hyperdrive length math (scaled for preview)
           const growth = s.progress;
-          const len = Math.min(
-            s.maxLength,
-            Math.max(s.minLength, (1 / effZ) * (s.speed / 60) * (0.6 + growth))
-          );
+          const baseLenFactor = 0.03 + 0.12 * growth;
 
-          const back = -len * 0.06;
+          let len = (s.speed * baseLenFactor) / (effZ + 0.02);
+          len = Math.max(s.minLength, Math.min(s.maxLength, len));
+
+          // back and forward points
+          const back = -Math.max(1, len * 0.06);
           const x1 = sx + ux * back;
           const y1 = sy + uy * back;
           const x2 = sx + ux * len;
           const y2 = sy + uy * len;
 
+          // streak
           ctx.strokeStyle = s.color;
-          ctx.lineWidth = Math.max(0.4, s.lineWidth || 0.8);
+          ctx.lineWidth = Math.max(0.4, s.lineWidth || 0.9);
           ctx.lineCap = "round";
           ctx.beginPath();
           ctx.moveTo(x1, y1);
           ctx.lineTo(x2, y2);
           ctx.stroke();
 
+          // head
           ctx.fillStyle = s.color;
-          ctx.fillRect(sx - 0.4, sy - 0.4, 1, 1);
+          ctx.fillRect(sx - 0.5, sy - 0.5, 1.5, 1.5);
+
+          ctx.globalAlpha = 1;
         }
 
         raf = requestAnimationFrame(animatePreview);
@@ -260,7 +294,6 @@ function startStarfieldPreview(canvas, options = {}) {
 
       raf = requestAnimationFrame(animatePreview);
 
-      // cleanup watcher
       const mo = new MutationObserver(() => {
         if (!document.body.contains(canvas)) {
           cancelAnimationFrame(raf);

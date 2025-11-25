@@ -148,8 +148,9 @@ function startStarfieldFull(canvas, options = {}) {
   resize();
   window.addEventListener("resize", resize);
 
-  // helpers: random in range
+  // helpers
   const rand = (a, b) => a + Math.random() * (b - a);
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
   // star containers
   let starLayers = []; // array of layers; each layer is array of star objects
@@ -165,6 +166,7 @@ function startStarfieldFull(canvas, options = {}) {
         const layer = [];
         const count = layerOpt.count || 60;
         for (let i = 0; i < count; i++) {
+          const colorArray = layerOpt.colors || ["#fff"];
           layer.push({
             x: Math.random() * window.innerWidth,
             y: Math.random() * window.innerHeight,
@@ -174,10 +176,7 @@ function startStarfieldFull(canvas, options = {}) {
             ),
             vx: (Math.random() - 0.5) * (layerOpt.speedMultiplier || 0.3),
             vy: (Math.random() - 0.5) * (layerOpt.speedMultiplier || 0.3),
-            color: (layerOpt.colors || ["#fff"])[
-              Math.floor(Math.random() * (layerOpt.colors || ["#fff"]).length)
-            ],
-            // optional redshift factor
+            color: colorArray[Math.floor(Math.random() * colorArray.length)],
             redshift: layerOpt.redshift || 0,
           });
         }
@@ -189,7 +188,7 @@ function startStarfieldFull(canvas, options = {}) {
     // Default single-layer starfield (pixel / smooth / hyperspeed)
     const type = options.type || "smooth";
 
-    // hyperspeed: longer, faster streaks (but still forward motion not radial)
+    // hyperspeed: longer, faster streaks (still directional)
     if (type === "hyperspeed") {
       const count = options.count || 200;
       const layer = [];
@@ -210,46 +209,51 @@ function startStarfieldFull(canvas, options = {}) {
       return;
     }
 
-    // hyperdrive: forward-travel (3D z-based projection)
+    // hyperdrive: forward-travel (3D z-based projection) — improved behavior
     if (type === "hyperdrive") {
       const countH = options.count || 350;
-      const maxSpeed = options.maxSpeed || 100; // controls forward speed
+      const maxSpeed = options.maxSpeed || 120; // top speed
       const minLength = options.minLength ?? 1;
       const maxLength =
         options.maxLength ??
         Math.max(window.innerWidth, window.innerHeight) * 0.35;
-      const centerBias = options.centerBias ?? 0.35; // 0..1, lower = more center concentration
+      const centerBias = clamp(options.centerBias ?? 0.7, 0.2, 1.4); // higher -> less center-clustered
       const starColor = options.starColor || "#ffffff";
-      const lineWidth = options.lineWidth ?? 0.9;
+      const lineWidth = options.lineWidth ?? 1.0;
+      const fadeInSpeed = options.fadeInSpeed ?? 1.0;
 
       const layer = [];
       for (let i = 0; i < countH; i++) {
-        // spawn coordinates relative to center
+        // spawn coordinates relative to center, biased but not ultra-dense in center
         const angle = Math.random() * Math.PI * 2;
-        // biased radius: random^power -> cluster near center
         const r =
           Math.pow(Math.random(), 1 / Math.max(0.01, centerBias)) *
           Math.min(window.innerWidth, window.innerHeight) *
-          0.15;
-        const x = Math.cos(angle) * r;
-        const y = Math.sin(angle) * r;
+          0.18;
+        const x0 = Math.cos(angle) * r;
+        const y0 = Math.sin(angle) * r;
 
-        // x,y centered coords, z depth in (0.01..1]
         layer.push({
-          // center-relative coordinates (project later)
-          x0: x,
-          y0: y,
-          z: rand(0.01, 1.0), // depth (small -> very close)
+          x0,
+          y0,
+          z: rand(0.2, 1.0), // start fairly far on average (less popping at center)
           speed: rand(maxSpeed * 0.25, maxSpeed),
-          progress: Math.random(), // 0..1 life progress (randomize to avoid sync)
-          growRate: rand(0.6, 1.4), // speed multiplier for growth
+          maxSpeed,
+          progress: Math.random() * 0.45, // start partially progressed to avoid perfect sync
+          growRate: rand(0.6, 1.4),
           minLength,
           maxLength,
           color: starColor,
           lineWidth,
+          life: 0, // opacity 0 → 1
+          fadeInSpeed: fadeInSpeed ?? 0.02,
         });
       }
-      starLayers.push({ type: "hyperdrive", items: layer, opt: options });
+      starLayers.push({
+        type: "hyperdrive",
+        items: layer,
+        opt: options,
+      });
       return;
     }
 
@@ -288,10 +292,11 @@ function startStarfieldFull(canvas, options = {}) {
     for (const layerWrapper of starLayers) {
       if (layerWrapper.type === "layer") {
         const items = layerWrapper.items;
+        const opt = layerWrapper.opt || {};
         for (const s of items) {
-          // move
-          s.x += s.vx * dt * 60;
-          s.y += s.vy * dt * 60;
+          // simple movement
+          s.x += (s.vx || 0) * dt * 60;
+          s.y += (s.vy || 0) * dt * 60;
 
           // wrap
           if (s.x < 0) s.x = window.innerWidth;
@@ -300,7 +305,7 @@ function startStarfieldFull(canvas, options = {}) {
           if (s.y > window.innerHeight) s.y = 0;
 
           ctx.fillStyle = s.color;
-          const size = Math.max(1, s.size);
+          const size = Math.max(1, s.size || 1);
           ctx.fillRect(s.x, s.y, size, size);
         }
       } else if (layerWrapper.type === "hyperdrive") {
@@ -309,72 +314,98 @@ function startStarfieldFull(canvas, options = {}) {
         const cx = window.innerWidth / 2;
         const cy = window.innerHeight / 2;
         const baseScale = Math.min(window.innerWidth, window.innerHeight) * 0.6;
+        const maxSpeed = layerWrapper.opt.maxSpeed;
 
         for (const s of items) {
-          // progress: grows, then when reaches 1 respawn
-          s.progress += (s.speed / 2000) * s.growRate * dt * 60;
+          // progress increases; speed scaled relative to maxSpeed so different option values behave predictably
+          const speedFactor = s.speed / Math.max(1, maxSpeed);
+          s.progress += clamp(
+            (s.speed / (maxSpeed * 3.2)) * s.growRate * dt * 1.8,
+            0,
+            1
+          );
+
+          // respawn if done (or off-screen)
           if (s.progress >= 1) {
-            // respawn near edge (keep variety)
             const angle = Math.random() * Math.PI * 2;
             const r =
               Math.pow(
                 Math.random(),
-                1 / Math.max(0.01, options.centerBias ?? 0.35)
+                1 / Math.max(0.01, layerWrapper.opt?.centerBias ?? 0.7)
               ) *
               Math.min(window.innerWidth, window.innerHeight) *
-              0.15;
+              0.18;
             s.x0 = Math.cos(angle) * r;
             s.y0 = Math.sin(angle) * r;
-            s.z = 0.9 + Math.random() * 0.1;
+            s.z = rand(0.2, 1.0);
             s.progress = 0;
             s.speed = rand(
-              (options.maxSpeed || 100) * 0.25,
-              options.maxSpeed || 100
+              (layerWrapper.opt?.maxSpeed || maxSpeed) * 0.25,
+              layerWrapper.opt?.maxSpeed || maxSpeed
             );
+            s.life = 0;
             continue;
           }
 
-          // perspective projection (z moves closer as progress increases: simulate forward travel)
-          // map z to an exponential feel: effectiveZ decreases with progress
-          const effZ = Math.max(0.02, s.z * (1 - 0.95 * s.progress));
+          // perspective projection
+          const effZ = Math.max(0.02, s.z * (1 - 0.92 * s.progress)); // nearer as progress grows
           const projFactor = baseScale / (effZ * baseScale + 1);
 
           const sx = cx + s.x0 * projFactor;
           const sy = cy + s.y0 * projFactor;
 
-          // velocity outward radial (direction from center to star projected point)
+          // radial unit vector from center
           const dx = sx - cx;
           const dy = sy - cy;
           const radialLen = Math.hypot(dx, dy) || 1;
           const ux = dx / radialLen;
           const uy = dy / radialLen;
 
-          // length grows with progress and inverse of z (nearer stars streak more)
-          const growth = s.progress; // 0..1 smooth growth
-          const len = Math.min(
-            s.maxLength,
-            Math.max(s.minLength, (1 / effZ) * (s.speed / 60) * (0.6 + growth))
+          // length calculation tuned: proportional to speed and progress, inversely to z, clamped to min/max
+          const growth = s.progress; // 0..1
+          // baseLenFactor controls overall length scale; tuned to not explode
+          const baseLenFactor = 0.03 + 0.12 * growth;
+          let len = (s.speed * baseLenFactor) / (effZ + 0.02);
+          len = clamp(
+            len,
+            s.minLength || 1,
+            s.maxLength ||
+              Math.max(window.innerWidth, window.innerHeight) * 0.35
           );
 
-          // draw line from a small offset behind the star to the forward end
-          const back = -len * 0.08; // short tail behind
+          // short tail behind the head
+          const back = -Math.max(1, len * 0.06);
           const x1 = sx + ux * back;
           const y1 = sy + uy * back;
           const x2 = sx + ux * len;
           const y2 = sy + uy * len;
 
-          ctx.strokeStyle = s.color;
-          ctx.lineWidth = Math.max(0.5, s.lineWidth || 0.9);
-          ctx.lineCap = "round";
+          // Increase life if fade enabled
+          if (options.fadeIn !== false) {
+            s.life = Math.min(1, s.life + s.fadeInSpeed * dt * 60);
+          } else {
+            s.life = 1;
+          }
 
+          // Apply fade-in opacity
+          const alpha = s.life;
+          ctx.globalAlpha = alpha;
+
+          // Draw the streak
+          ctx.strokeStyle = s.color;
+          ctx.lineWidth = Math.max(0.4, s.lineWidth || 0.9);
+          ctx.lineCap = "round";
           ctx.beginPath();
           ctx.moveTo(x1, y1);
           ctx.lineTo(x2, y2);
           ctx.stroke();
 
-          // small head bright dot to emulate lens flare
+          // Draw the star head
           ctx.fillStyle = s.color;
           ctx.fillRect(sx - 0.5, sy - 0.5, 1.5, 1.5);
+
+          // Reset global alpha
+          ctx.globalAlpha = 1;
         }
       }
     }
