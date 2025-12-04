@@ -31,5 +31,6 @@
 ## Tools Page
 
 - Unit converters (temperature, time, bytes)
+- Subnet calculator (like [this](https://www.calculator.net/ip-subnet-calculator.html))
 - Simple password generator
 - QR code generator
