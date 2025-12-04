@@ -43,6 +43,18 @@
       {
         "name": "My Github",
         "url": "https://github.com/romain-vdw"
+      },
+      {
+        "name": "Duck DNS",
+        "url": "https://www.duckdns.org"
+      },
+      {
+        "name": "Proximus Internet Box settings",
+        "url": "https://www.proximus.be/myproximus/en/Personal/services/HomeGateway__/#/myproximus/en/Personal/services/HomeGateway__/"
+      },
+      {
+        "name": "DNS Checker",
+        "url": "https://dnschecker.org"
       }
     ]
   },
