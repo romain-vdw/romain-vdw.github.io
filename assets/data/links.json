@@ -28,12 +28,12 @@
     "icon": "dashboard",
     "links": [
       {
-        "name": "Home Server Interface",
-        "url": "https://webmin.rom1.be"
+        "name": "Nginx Proxy Manager",
+        "url": "https://npm.rom1.be"
       },
       {
-        "name": "Game Hosting Interface",
-        "url": "https://amp.rom1.be"
+        "name": "AdGuard Home",
+        "url": "https://adguard.rom1.be"
       }
     ]
   },
