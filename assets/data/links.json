@@ -21,12 +21,20 @@
       {
         "name": "Temp Mail",
         "url": "https://temp-mail.org"
+      },
+      {
+        "name": "Google Drive",
+        "url": "https://drive.google.com/drive/my-drive"
       }
     ]
   },
   "Subdomain Dashboards": {
     "icon": "dashboard",
     "links": [
+      {
+        "name": "Proxmox VE (LAN & VPN Only)",
+        "url": "https://pve.rom1.be"
+      },
       {
         "name": "Nginx Proxy Manager",
         "url": "https://npm.rom1.be"
@@ -45,8 +53,8 @@
         "url": "https://my.combell.com/en/go"
       },
       {
-        "name": "Google Drive",
-        "url": "https://drive.google.com/drive/my-drive"
+        "name": "Cloudflare Dashboard",
+        "url": "https://dash.cloudflare.com/"
       },
       {
         "name": "My Github",
@@ -113,19 +121,6 @@
       {
         "name": "Website Icons Used",
         "url": "https://fonts.google.com/icons?icon.set=Material+Icons&icon.style=Rounded"
-      }
-    ]
-  },
-  "Template": {
-    "icon": "",
-    "links": [
-      {
-        "name": "Tessssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssst",
-        "url": ""
-      },
-      {
-        "name": "Example",
-        "url": ""
       }
     ]
   }
