@@ -71,6 +71,10 @@
       {
         "name": "DNS Checker",
         "url": "https://dnschecker.org"
+      },
+      {
+        "name": "Proxmox VE Helper-Scripts",
+        "url": "https://community-scripts.github.io/ProxmoxVE/"
       }
     ]
   },
