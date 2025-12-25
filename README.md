@@ -2,7 +2,7 @@
 
 ## Priority
 
-- ???
+- Add an asterisk (*) after the text from links.json for category names or link names (e.g., "Special Sites", "ChatGPT") when using an element like "tooltip": "your comment here".
 
 ## N/A Page
 
