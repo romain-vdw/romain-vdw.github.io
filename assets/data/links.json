@@ -42,6 +42,10 @@
       {
         "name": "AdGuard Home",
         "url": "https://adguard.rom1.be"
+      },
+      {
+        "name": "WireGuard Home",
+        "url": "https://wireguard.rom1.be"
       }
     ]
   },
@@ -75,6 +79,10 @@
       {
         "name": "Proxmox VE Helper-Scripts",
         "url": "https://community-scripts.github.io/ProxmoxVE/"
+      },
+      {
+        "name": "Adblock Tester",
+        "url": "https://adblock.turtlecute.org/"
       }
     ]
   },
