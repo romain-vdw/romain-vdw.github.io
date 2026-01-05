@@ -28,11 +28,11 @@
       }
     ]
   },
-  "Subdomain Dashboards": {
+  "Subdomain Dashboards (LAN & VPN Only)": {
     "icon": "dashboard",
     "links": [
       {
-        "name": "Proxmox VE (LAN & VPN Only)",
+        "name": "Proxmox VE",
         "url": "https://pve.rom1.be"
       },
       {
@@ -46,6 +46,10 @@
       {
         "name": "WireGuard Home",
         "url": "https://wireguard.rom1.be"
+      },
+      {
+        "name": "CubeCoders AMP",
+        "url": "https://amp.rom1.be"
       }
     ]
   },
