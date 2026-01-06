@@ -87,6 +87,10 @@
       {
         "name": "Adblock Tester",
         "url": "https://adblock.turtlecute.org/"
+      },
+      {
+        "name": "Port Checker",
+        "url": "https://portchecker.co"
       }
     ]
   },
