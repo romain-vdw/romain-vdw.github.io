@@ -116,7 +116,7 @@ async function updateServerStatus(server, card) {
     const motdHTML = data.motd?.html ? data.motd.html.join(" \\n ") : "";
 
     const host = data.hostname || server.ip;
-    const addrFull = data.port === 25565 ? host : `${host}:${data.port}`;
+    const addrFull = data.debug?.srv ? host : data.port === 25565 ? host : `${host}:${data.port}`;
 
     const cacheTime = Number(
       data.debug?.cachetime ?? Math.floor(Date.now() / 1000)
