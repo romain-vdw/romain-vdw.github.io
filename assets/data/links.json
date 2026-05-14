@@ -3,14 +3,6 @@
     "icon": "folder_special",
     "links": [
       {
-        "name": "ChatGPT",
-        "url": "https://chatgpt.com/"
-      },
-      {
-        "name": "Remote Desktop",
-        "url": "https://remotedesktop.google.com/access"
-      },
-      {
         "name": "iCloud Website",
         "url": "https://www.icloud.com"
       },
@@ -21,6 +13,10 @@
       {
         "name": "Temp Mail",
         "url": "https://temp-mail.org"
+      },
+      {
+        "name": "Remote Desktop",
+        "url": "https://remotedesktop.google.com/access"
       },
       {
         "name": "Google Drive",
@@ -81,7 +77,7 @@
         "url": "https://dnschecker.org"
       },
       {
-        "name": "Proxmox VE Helper-Scripts",
+        "name": "Proxmox VE Community Scripts",
         "url": "https://community-scripts.github.io/ProxmoxVE/"
       },
       {
@@ -141,6 +137,10 @@
       {
         "name": "Website Icons Used",
         "url": "https://fonts.google.com/icons?icon.set=Material+Icons&icon.style=Rounded"
+      },
+      {
+        "name": "Unicode (Box Drawing)",
+        "url": "https://symbl.cc/en/unicode/blocks/box-drawing/"
       }
     ]
   }
