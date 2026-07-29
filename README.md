@@ -18,11 +18,11 @@
 
 ## Settings Page
 
-- ???
+- Completely redo Settings Page
 
 ## Minecraft Page
 
-- ???
+- Nothing
 
 ## About Page
 
