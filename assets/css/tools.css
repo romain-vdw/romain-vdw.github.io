@@ -1,0 +1,215 @@
+/* ===== TOOLS PAGE STYLES ===== */
+
+.link-group {
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--bg1-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  transition: background var(--transition), box-shadow var(--transition);
+}
+
+/* ===== GROUP HEADER ===== */
+.link-group-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.9rem 1.2rem;
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--transition);
+}
+
+.link-group-header:hover {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.link-group-header h2 {
+  flex-grow: 1;
+  font-size: 1.2rem;
+  color: var(--accent);
+  margin: 0;
+  font-weight: 600;
+}
+
+.link-group-header .material-icons-round {
+  color: var(--accent);
+  font-size: 1.4rem;
+}
+
+.expand-icon {
+  transition: transform 0.25s ease;
+}
+
+.expand-icon.rotated {
+  transform: rotate(180deg);
+}
+
+/* Reuses .link-group / .link-group-header / .expand-icon defined above,
+   kept in sync with links.css's category header pattern */
+
+.tools-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  padding: 1rem 1.2rem 1.2rem;
+  transition:
+    max-height 0.3s ease,
+    opacity 0.3s ease,
+    padding 0.3s ease;
+}
+
+.tools-grid.collapsed {
+  max-height: 0;
+  opacity: 0;
+  padding: 0 1.2rem;
+  overflow: hidden;
+}
+
+/* ===== TOOL CARD ===== */
+.tool-card {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: var(--text-color);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 0.9rem 1rem 1.1rem;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.25s ease,
+    background var(--transition);
+  backdrop-filter: blur(8px);
+}
+
+.tool-card:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.07);
+  box-shadow:
+    0 0 10px color-mix(in srgb, var(--accent) 35%, transparent),
+    0 4px 12px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+/* ----- live iframe preview (bleeds to card edges) ----- */
+.tool-preview {
+  position: relative;
+  width: calc(100% + 2rem);
+  margin: 0 -1rem 0.7rem;
+  height: 160px;
+  background: #000;
+  overflow: hidden;
+  pointer-events: none;
+  /* clicks pass through to the wrapping <a> */
+}
+
+.tool-preview iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 0;
+  transform-origin: top left;
+}
+
+/* ----- fallback icon preview (external tools / no iframe) ----- */
+.tool-preview.icon-only {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.tool-preview.icon-only .material-icons-round {
+  font-size: 2.4rem;
+  color: var(--accent);
+}
+
+/* ===== TOOLBAR ===== */
+.links-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 0.5rem;
+}
+
+.toggle-collapse-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: var(--bg1-color);
+  color: var(--text-color);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background var(--transition), transform 0.1s ease;
+  backdrop-filter: blur(8px);
+}
+
+.toggle-collapse-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.toggle-collapse-btn .material-icons-round {
+  font-size: 1.2rem;
+  color: var(--accent);
+}
+
+/* ----- name (above preview) ----- */
+.tool-name {
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.7rem;
+}
+
+.tool-name .material-icons-round {
+  font-size: 1.1rem;
+  color: var(--accent);
+}
+
+/* ----- description (below preview) ----- */
+.tool-desc {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.35;
+}
+
+.tool-badge {
+  align-self: flex-start;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+}
+
+/* ===== EMPTY CATEGORY STATE ===== */
+.tools-empty {
+  padding: 1rem 1.2rem 1.4rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 600px) {
+  .tools-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+
+  .tool-preview {
+    height: 120px;
+  }
+}

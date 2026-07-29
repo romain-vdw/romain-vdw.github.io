@@ -31,7 +31,6 @@
 ## Tools Page
 
 - Unit converters (temperature, time, bytes)
-- Subnet calculator (like [this](https://www.calculator.net/ip-subnet-calculator.html))
-- Percentage calculator (like [this](https://www.calculator.net/percent-calculator.html))
 - Simple password generator
 - QR code generator
+- copy "[Percentage calculator](https://www.calculator.net/percent-calculator.html)" but make it myself (to officially have it in dark mode, etc.)

@@ -1,0 +1,42 @@
+{
+  "My Tools": {
+    "icon": "build",
+    "tools": [
+      {
+        "name": "iPhone Home Screen Planner",
+        "description": "Plan out your iPhone home screen layout, folders and dock before you rearrange the real thing.",
+        "url": "/tools/iphone-screen-planner/",
+        "preview": {
+          "type": "iframe",
+          "width": 900,
+          "height": 800
+        }
+      }
+    ]
+  },
+  "Useful External Tools": {
+    "icon": "open_in_new",
+    "tools": [
+      {
+        "name": "Percentage Calculator",
+        "description": "Work out percentages, percentage change, and what percent one number is of another.",
+        "url": "https://www.calculator.net/percent-calculator.html",
+        "preview": {
+          "type": "iframe",
+          "width": 900,
+          "height": 800
+        }
+      },
+      {
+        "name": "Subnet Calculator",
+        "description": "Calculate subnet mask, network/broadcast address, usable host range and CIDR notation for an IP block.",
+        "url": "https://www.calculator.net/ip-subnet-calculator.html",
+        "preview": {
+          "type": "iframe",
+          "width": 900,
+          "height": 800
+        }
+      }
+    ]
+  }
+}
