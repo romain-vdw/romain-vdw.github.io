@@ -22,7 +22,8 @@
 
 ## Minecraft Page
 
-- Nothing
+- Add enchantments list like [this](https://www.mcstate.net/enchantments) (maybe even a loadout-page/checklist/etc. look at own .docx for more info)
+- Update the Server status (e.g. be more like [this](https://www.mcstate.net/server/mc.rom1.be))
 
 ## About Page
 
