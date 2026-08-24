@@ -1,18 +1,13 @@
 /* =========================================
-   Server Icon — Top-Right Floating
+   Monocraft webfont (for MOTD + version)
+   A monospaced redesign of the Minecraft UI typeface — OFL-1.1 licensed
 ========================================= */
-.mc-server-card .server-icon-wrap {
-  position: absolute;
-  top: 0.8rem;
-  right: 0.8rem;
-  z-index: 2;
-}
-
-.server-icon {
-  width: 4rem;
-  height: 4rem;
-  image-rendering: pixelated;
-  border-radius: 6px;
+@font-face {
+  font-family: "Monocraft";
+  src: url("https://cdn.jsdelivr.net/gh/IdreesInc/Monocraft@main/dist/Monocraft-ttf/Monocraft.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
 /* =========================================
@@ -24,86 +19,267 @@
   line-height: 1.45;
 }
 
-/* Card container */
 .mc-server-card {
   position: relative;
   overflow: visible;
-  transition: transform 0.12s ease;
+  max-width: 824px;
+  margin-left: auto;
+  margin-right: auto;
+  transition: transform 0.12s ease, box-shadow 0.25s ease;
+  border-left: 3px solid rgba(255, 255, 255, 0.15);
+}
+
+.mc-server-card.state-online {
+  border-left-color: lime;
+}
+
+.mc-server-card.state-sleeping {
+  border-left-color: orange;
+}
+
+.mc-server-card.state-offline {
+  border-left-color: red;
 }
 
 /* =========================================
-   Header
+   TOP: status bar (status / name / address)
 ========================================= */
-.server-header {
+.status-bar {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.2rem;
-  padding-right: 0;
-  /* NEW: no padding needed */
+  gap: 0.9rem;
+  padding-bottom: 0.8rem;
+  margin-bottom: 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.mc-server-title {
-  width: calc(100% - 4rem);
-  margin: 0;
-  line-height: 1.2;
+.status-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  flex-shrink: 0;
 }
 
-/* =========================================
-   Body
-========================================= */
-.server-body {
-  margin-top: 0.8rem;
-  /* No right padding — content can go full width */
+/* squared, blinking status indicator */
+.status-dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 3px;
+  background: currentColor;
+  box-shadow: 0 0 6px currentColor;
+  animation: status-blink 1.4s ease-in-out infinite;
 }
 
-.players-wrap .players-summary {
-  margin: 0.25rem 0;
+@keyframes status-blink {
+  0%, 100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-dot {
+    animation: none;
+  }
+}
+
+.state-online .status-left {
+  color: lime;
+}
+
+.state-sleeping .status-left {
+  color: orange;
+}
+
+.state-offline .status-left {
+  color: red;
+}
+
+.server-name {
+  flex-grow: 1;
+  min-width: 0;
   font-weight: 600;
+  font-size: 1.05rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.player-list {
-  margin: 0.15rem 0;
-  opacity: 0.9;
-}
-
-/* =========================================
-   Address Line
-========================================= */
-.address-line {
-  margin-top: 0.4rem;
-  font-size: 0.95rem;
-  color: var(--text-color);
-}
-
-.address-value {
+.server-address {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: "SF Mono", "Consolas", "Menlo", monospace;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
   cursor: pointer;
-  text-decoration: underline dotted;
-  margin-left: 0.25rem;
-  transition: opacity 0.2s ease;
+  text-decoration: none;
+  transition: color 0.2s ease;
 }
 
-.address-value:hover {
-  opacity: 0.7;
+.server-address .address-copy-icon {
+  font-size: 0.95rem;
+}
+
+.server-address:hover {
+  color: rgba(255, 255, 255, 0.85);
 }
 
 /* =========================================
-   MOTD
+   MIDDLE: icon+version / MOTD
 ========================================= */
+.server-main {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+}
+
+.server-icon-col {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.server-icon {
+  width: 4.5rem;
+  height: 4.5rem;
+  image-rendering: pixelated;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: block;
+}
+
+/* version sits under the server icon, plain white */
+.version-line {
+  font-family: "Monocraft", monospace;
+  font-size: 0.78rem;
+  color: #fff;
+  text-align: center;
+}
+
+.server-details {
+  flex-grow: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ----- MOTD: bigger, Minecraft webfont, preserves real line breaks + leading spaces ----- */
 .motd-wrap {
-  margin: 0.3rem 0;
+  white-space: pre-wrap;
+  font-family: "Monocraft", monospace;
+  font-size: 1.15rem;
+  line-height: 1.55;
+  font-kerning: none;
+  font-variant-ligatures: none;
+}
+
+/* ----- players row: label + bar + count ----- */
+.players-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.players-label {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.players-bar-track {
+  flex-grow: 1;
+  height: 0.35rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.players-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: lime;
+  border-radius: 999px;
+  transition: width 0.4s ease, background 0.4s ease;
+}
+
+.players-count {
+  flex-shrink: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.players-current {
+  font-weight: 700;
+  color: inherit;
 }
 
 /* =========================================
-   Footer (allowed full width!)
+   Player(s) list
+========================================= */
+.player-sample-wrap:not(:empty) {
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.player-sample-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 0.5rem;
+}
+
+.player-sample-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.player-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 0.3rem 0.6rem 0.3rem 0.3rem;
+  font-size: 0.85rem;
+}
+
+.player-avatar {
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 4px;
+  image-rendering: pixelated;
+  display: block;
+}
+
+/* =========================================
+   Footer
 ========================================= */
 .server-footer {
-  margin-top: 0.75rem;
+  margin-top: 0.85rem;
   display: flex;
   justify-content: flex-end;
   align-items: center;
   width: 100%;
-  /* ensures full width */
 }
 
 .footer-right {
@@ -141,17 +317,31 @@
 }
 
 /* =========================================
-   Updating State
-========================================= */
-.state-line.updating {
-  opacity: 0.55;
-  transition: opacity 0.2s linear;
-}
-
-/* =========================================
    Mobile
 ========================================= */
 @media (max-width: 600px) {
+  .mc-server-card {
+    max-width: 100%;
+  }
+
+  .status-bar {
+    flex-wrap: wrap;
+    row-gap: 0.4rem;
+  }
+
+  .server-address {
+    order: 3;
+    width: 100%;
+  }
+
+  .server-icon {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  .motd-wrap {
+    font-size: 1rem;
+  }
 
   .server-footer {
     justify-content: space-between;

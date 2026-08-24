@@ -34,10 +34,14 @@ function relHumanFromSec(ts) {
   return diff < 60 ? `${diff}s ago` : `${Math.floor(diff / 60)}m ago`;
 }
 
-function extractPlayerNames(arr) {
+function extractPlayers(arr) {
+  // Normalizes mixed string/object player entries into {name, uuid}
   return arr
-    .map((p) => (typeof p === "string" ? p : p?.name).trim())
-    .filter(Boolean);
+    .map((p) => {
+      if (typeof p === "string") return { name: p.trim(), uuid: null };
+      return { name: (p?.name || "").trim(), uuid: p?.uuid || null };
+    })
+    .filter((p) => p.name);
 }
 
 // Keep timestamps globally so we can live-update them
@@ -50,31 +54,41 @@ function createServerCard(server) {
   card.id = `server-${server.ip.replace(/\W/g, "_")}`;
 
   card.innerHTML = `
-    <h2 class="mc-server-title">${server.name}</h2>
-
     <div class="status-content">
-      <div class="server-header">
-        <div class="server-icon-wrap">
-          <img class="server-icon" src="/assets/img/packpng.svg" alt="Server icon">
+      <div class="status-bar">
+        <div class="status-left">
+          <span class="status-dot"></span>
+          <span class="status-text">Loading...</span>
         </div>
-        <div class="server-state-wrap">
-          <p class="state-line"><em>Loading...</em></p>
+        <div class="server-name">${server.name}</div>
+        <div class="server-address" role="button" title="Click to copy">
+          <span class="material-icons-round address-copy-icon">content_copy</span>
+          <span class="address-text"></span>
         </div>
       </div>
 
-      <div class="server-body">
-        <div class="players-wrap"></div>
+      <div class="server-main">
+        <div class="server-icon-col">
+          <div class="server-icon-wrap">
+            <img class="server-icon" src="/assets/img/packpng.svg" alt="Server icon">
+          </div>
+          <div class="version-line"></div>
+        </div>
 
-        <p class="address-line">Address:
-          <span class="address-value" role="button"></span>
-        </p>
-
-        <p class="version-line"></p>
-
-        <p class="motd-wrap"></p>
-
-        <div class="player-list-wrap"></div>
+        <div class="server-details">
+          <div class="motd-wrap"></div>
+        </div>
       </div>
+
+      <div class="players-row">
+        <span class="players-label">Players</span>
+        <div class="players-bar-track"><div class="players-bar-fill"></div></div>
+        <span class="players-count">
+          <span class="players-current">--</span>/<span class="players-max">--</span>
+        </span>
+      </div>
+
+      <div class="player-sample-wrap"></div>
     </div>
 
     <div class="server-footer">
@@ -95,12 +109,15 @@ async function updateServerStatus(server, card) {
   const apiURL = `https://api.mcsrvstat.us/3/${server.ip}`;
 
   const iconWrap = card.querySelector(".server-icon-wrap");
-  const stateLine = card.querySelector(".state-line");
-  const playersWrap = card.querySelector(".players-wrap");
-  const listWrap = card.querySelector(".player-list-wrap");
-  const addrValue = card.querySelector(".address-value");
-  const versionLine = card.querySelector(".version-line");
+  const statusText = card.querySelector(".status-text");
+  const addrEl = card.querySelector(".server-address");
+  const addrTextEl = card.querySelector(".address-text");
   const motdWrap = card.querySelector(".motd-wrap");
+  const versionLine = card.querySelector(".version-line");
+  const playersCurrent = card.querySelector(".players-current");
+  const playersMaxEl = card.querySelector(".players-max");
+  const playersBarFill = card.querySelector(".players-bar-fill");
+  const sampleWrap = card.querySelector(".player-sample-wrap");
   const lastEl = card.querySelector(".last-updated");
   const nextEl = card.querySelector(".next-update");
 
@@ -112,70 +129,118 @@ async function updateServerStatus(server, card) {
     const icon = data.icon || "/assets/img/packpng.svg";
     const playersOnline = data.players?.online ?? 0;
     const playersMax = data.players?.max ?? 0;
-    const names = extractPlayerNames(data.players?.list || []);
-    const motdHTML = data.motd?.html ? data.motd.html.join(" \\n ") : "";
+    const players = extractPlayers(data.players?.list || []);
+    // Real newlines (not literal "\n" text) so pre-wrap can render line breaks.
+    // Also normalize typographic dashes to a plain hyphen — the Minecraft
+    // webfont doesn't have proper glyphs for en/em dashes, so those chars
+    // were falling back to a different font mid-line.
+    const motdHTML = data.motd?.html
+      ? data.motd.html.join("\n").replace(/[\u2010-\u2015]/g, "-")
+      : "";
 
     const host = data.hostname || server.ip;
-    const addrFull = data.debug?.srv ? host : data.port === 25565 ? host : `${host}:${data.port}`;
+    const addrFull = data.debug?.srv
+      ? host
+      : data.port === 25565
+        ? host
+        : `${host}:${data.port}`;
 
     const cacheTime = Number(
-      data.debug?.cachetime ?? Math.floor(Date.now() / 1000)
+      data.debug?.cachetime ?? Math.floor(Date.now() / 1000),
     );
     const cacheExpire = Number(data.debug?.cacheexpire ?? cacheTime + 300);
 
     // Store timestamps globally for live-updating
     serverTimestamps[server.ip] = { cacheTime, cacheExpire };
 
-    // ICON
+    // ICON (falls back to default packpng.svg when the server has none)
     iconWrap.innerHTML = `<img class="server-icon" src="${icon}" alt="Server icon">`;
 
-    // ADDRESS (Click-to-copy)
-    addrValue.textContent = addrFull;
-    addrValue.onclick = () => {
+    // ADDRESS (click-to-copy, underline only on hover via CSS)
+    addrTextEl.textContent = addrFull;
+    addrEl.onclick = () => {
       navigator.clipboard.writeText(addrFull).then(() => {
-        showToastNear(addrValue, "Copied!");
+        showToastNear(addrEl, "Copied!");
       });
     };
 
     // VERSION
-    versionLine.textContent = data.version ? `Version: ${data.version}` : "";
+    versionLine.textContent = data.version || "";
+    versionLine.style.display = data.version ? "block" : "none";
 
-    // STATE
+    // STATE (vivid green/orange/red)
     let sleeping = online && playersOnline === 0 && playersMax === 20;
 
+    card.classList.remove("state-online", "state-offline", "state-sleeping");
+
     if (!online) {
-      stateLine.innerHTML = `<strong style="color: red;">Offline</strong>`;
+      card.classList.add("state-offline");
+      statusText.textContent = "Offline";
     } else if (sleeping) {
-      stateLine.innerHTML = `<strong style="color: orange;">Sleeping</strong>`;
+      card.classList.add("state-sleeping");
+      statusText.textContent = "Sleeping";
     } else {
-      stateLine.innerHTML = `<strong style="color: lime;">Online</strong>`;
+      card.classList.add("state-online");
+      statusText.textContent = "Online";
     }
 
-    // PLAYERS SUMMARY
-    if (!online || sleeping) {
-      playersWrap.innerHTML = "";
-      listWrap.innerHTML = "";
+    // PLAYER BAR
+    if (!online) {
+      playersCurrent.textContent = "--";
+      playersMaxEl.textContent = "--";
+      playersBarFill.style.width = "0%";
+      playersCurrent.style.color = "";
+      sampleWrap.innerHTML = "";
     } else {
       const pct = playersMax > 0 ? playersOnline / playersMax : 0;
-      let color = "lime";
-      if (playersOnline >= playersMax) color = "red";
-      else if (pct >= 0.5) color = "yellow";
+      let color = "lime"; // vivid green
+      if (playersOnline >= playersMax && playersMax > 0)
+        color = "red"; // vivid red
+      else if (pct >= 0.5) color = "orange"; // vivid orange
 
-      playersWrap.innerHTML = `<p class="players-summary" style="color:${color}">Players: ${playersOnline}/${playersMax}</p>`;
-      listWrap.innerHTML = names.length
-        ? `<p class="player-list">Online: ${names.join(", ")}</p>`
-        : "";
+      playersCurrent.textContent = playersOnline;
+      playersMaxEl.textContent = playersMax;
+      playersCurrent.style.color = color;
+      playersBarFill.style.width = `${Math.min(pct * 100, 100)}%`;
+      playersBarFill.style.background = color;
+
+      // PLAYER LIST (only shown when there are players online)
+      if (players.length) {
+        sampleWrap.innerHTML = `
+          <div class="player-sample-label">Player(s)</div>
+          <div class="player-sample-list">
+            ${players
+              .map((p) => {
+                const id = encodeURIComponent(p.uuid || p.name);
+                const avatar = `https://mc-heads.net/avatar/${id}/20`;
+                return `
+                  <div class="player-chip">
+                    <img class="player-avatar" src="${avatar}" alt="" loading="lazy"
+                         onerror="this.src='/assets/img/packpng.svg'">
+                    <span>${p.name}</span>
+                  </div>
+                `;
+              })
+              .join("")}
+          </div>
+        `;
+      } else {
+        sampleWrap.innerHTML = "";
+      }
     }
 
-    // MOTD (single line)
-    motdWrap.innerHTML = motdHTML ? "MOTD: " + motdHTML : "";
+    // MOTD (pre-wrap preserves leading spaces / real line breaks, like in-game)
+    motdWrap.innerHTML = motdHTML;
+    motdWrap.style.display = motdHTML ? "block" : "none";
 
     // FOOTER (initial fill)
     lastEl.textContent = `Last updated: ${relHumanFromSec(cacheTime)}`;
     nextEl.textContent = `Next update: ${nextFormatSec(cacheExpire)}`;
   } catch (err) {
     console.error("Error:", err);
-    stateLine.innerHTML = `<strong style="color: red;">Error fetching</strong>`;
+    card.classList.remove("state-online", "state-sleeping");
+    card.classList.add("state-offline");
+    statusText.textContent = "Error fetching";
   }
 }
 
@@ -188,7 +253,7 @@ function updateAllServers(servers) {
   });
 }
 
-// ========== LIVE UPDATE “Last updated / Next update” ==========
+// ========== LIVE UPDATE "Last updated / Next update" ==========
 setInterval(() => {
   const now = Math.floor(Date.now() / 1000);
 
@@ -203,9 +268,8 @@ setInterval(() => {
     lastEl.textContent = `Last updated: ${relHumanFromSec(t.cacheTime)}`;
     nextEl.textContent = `Next update: ${nextFormatSec(t.cacheExpire)}`;
 
-    // ---- NEW: instant refresh when expired ----
+    // Instant refresh when expired
     if (now >= t.cacheExpire) {
-      // Refresh THIS server immediately
       const ipRaw = ip;
       const serversJson = window._serversList || [];
       const serverData = serversJson.find((s) => s.ip === ipRaw);
@@ -221,7 +285,7 @@ setInterval(() => {
 fetch("/assets/data/mc-servers.json")
   .then((res) => res.json())
   .then((servers) => {
-    window._serversList = servers; // <--- added
+    window._serversList = servers;
 
     servers.forEach((server) => {
       const card = createServerCard(server);
