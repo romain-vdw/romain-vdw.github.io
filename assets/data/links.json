@@ -24,6 +24,23 @@
       }
     ]
   },
+  "Minecraft Sites": {
+    "icon": "view_in_ar",
+    "links": [
+      {
+        "name": "Ore Distribution",
+        "url": "https://www.minecraftmaps.com/tools/ore-distribution"
+      },
+      {
+        "name": "Chunkbase",
+        "url": "https://www.chunkbase.com/apps/"
+      },
+      {
+        "name": "Trim Generator",
+        "url": "https://minetrim.com//?helmet=net_sil_red_29,29,33&chestplate=net_sil_red_29,29,33&leggings=net_sil_red_29,29,33&boots=net_sil_red_29,29,33"
+      }
+    ]
+  },
   "Subdomain Dashboards (LAN & VPN Only)": {
     "icon": "dashboard",
     "links": [
